@@ -28,36 +28,36 @@ func RightOf[L, R any](value R) Either[L, R] {
 	}
 }
 
-func (x either[L, R]) IsLeft() bool {
-	return x.left.IsDefined()
+func (this either[L, R]) IsLeft() bool {
+	return this.left.IsDefined()
 }
 
-func (x either[L, R]) IsRight() bool {
-	return x.right.IsDefined()
+func (this either[L, R]) IsRight() bool {
+	return this.right.IsDefined()
 }
 
-func (x either[L, R]) GetLeft() Option[L] {
-	return x.left
+func (this either[L, R]) GetLeft() Option[L] {
+	return this.left
 }
 
-func (x either[L, R]) GetRight() Option[R] {
-	return x.right
+func (this either[L, R]) GetRight() Option[R] {
+	return this.right
 }
 
-func (x either[L, R]) Fold(left func(L), right func(R)) {
-	if x.IsLeft() {
-		v, _ := x.GetLeft().Get()
+func (this either[L, R]) Fold(left func(L), right func(R)) {
+	if this.IsLeft() {
+		v, _ := this.GetLeft().Get()
 		left(v)
 	} else {
-		v, _ := x.GetRight().Get()
+		v, _ := this.GetRight().Get()
 		right(v)
 	}
 }
 
-func (x either[L, R]) Swap() Either[R, L] {
+func (this either[L, R]) Swap() Either[R, L] {
 	return either[R, L]{
-		left:  x.right,
-		right: x.left,
+		left:  this.right,
+		right: this.left,
 	}
 }
 

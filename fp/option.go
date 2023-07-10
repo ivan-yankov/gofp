@@ -28,26 +28,26 @@ func None[T any]() Option[T] {
 	}
 }
 
-func (x option[T]) IsDefined() bool {
-	return x.defined
+func (this option[T]) IsDefined() bool {
+	return this.defined
 }
 
-func (x option[T]) NonDefined() bool {
-	return !x.defined
+func (this option[T]) NonDefined() bool {
+	return !this.defined
 }
 
-func (x option[T]) Get() (T, error) {
-	if x.defined {
-		return x.value, nil
+func (this option[T]) Get() (T, error) {
+	if this.defined {
+		return this.value, nil
 	} else {
 		var x T
 		return x, errors.New("Unable to get value from None")
 	}
 }
 
-func (x option[T]) GetOrElse(y T) T {
-	if x.defined {
-		v, _ := x.Get()
+func (this option[T]) GetOrElse(y T) T {
+	if this.defined {
+		v, _ := this.Get()
 		return v
 	} else {
 		return y

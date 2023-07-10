@@ -1,25 +1,24 @@
 package fp
 
 type Seq[T any] interface {
+	Add(T) Seq[T]
 	IsEmpty() bool
 	NonEmpty() bool
 	HeadOption() Option[T]
 	LastOption() Option[T]
 	Tail() Seq[T]
-	Add(T) Seq[T]
-	// Append(T) Seq[T]
+	Equals(Seq[T]) bool
+	Reverse() Seq[T]
+	Append(T) Seq[T]
+	Concat(Seq[T]) Seq[T]
 	// Contains(T) bool
-	// ContainsSlice(Seq[T]) bool
 	// Count() int
 	// Diff(Seq[T]) Seq[T]
 	// Distinct() Seq[T]
 	// Drop() Seq[T]
 	// DropRight() Seq[T]
 	// DropWhile(func(T) bool) Seq[T]
-	// StartsWith(Seq[T]) bool
-	// EndsWith(Seq[T]) bool
-	// Equals(Seq[T]) bool
-	// Exists(T) bool
+	// Exists(func(T) bool) bool
 	// Filter(func(T) bool) Seq[T]
 	// FilterNot(func(T) bool) Seq[T]
 	// Find(func(T) bool) Option[T]
@@ -35,4 +34,7 @@ type Seq[T any] interface {
 	// LastIndexOfWhereFrom(func(T) bool, int) int
 	// IsValidIndex(int) bool
 	// Indexes() Seq[int]
+	// ContainsSlice(Seq[T]) bool
+	// StartsWith(Seq[T]) bool
+	// EndsWith(Seq[T]) bool
 }
