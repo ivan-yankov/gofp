@@ -11,8 +11,8 @@ type Seq[T any] interface {
 	Reverse() Seq[T]
 	Append(T) Seq[T]
 	Concat(Seq[T]) Seq[T]
-	// Contains(T) bool
-	// Count() int
+	ContainsElement(T) bool
+	Size() int
 	// Diff(Seq[T]) Seq[T]
 	// Distinct() Seq[T]
 	// Drop() Seq[T]

@@ -118,3 +118,13 @@ func (this List[T]) Append(e T) Seq[T] {
 func (this List[T]) Concat(that Seq[T]) Seq[T] {
 	return iterate(that, this.Reverse(), add[T]).Reverse()
 }
+
+func (this List[T]) ContainsElement(e T) bool {
+	f := func(ei T, acc bool) bool { return acc || reflect.DeepEqual(e, ei) }
+	return iterate[T, bool](this, false, f)
+}
+
+func (this List[T]) Size() int {
+	f := func(_ T, acc int) int { return acc + 1 }
+	return iterate[T, int](this, 0, f)
+}
