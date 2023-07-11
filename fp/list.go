@@ -86,7 +86,7 @@ func (this List[T]) Equals(that Seq[T]) bool {
 }
 
 func (this List[T]) Reverse() Seq[T] {
-	return iterateAdd[T](this, emptyList[T]())
+	return iterate[T, Seq[T]](this, emptyList[T](), add[T])
 }
 
 func (this List[T]) Append(e T) Seq[T] {
@@ -94,5 +94,5 @@ func (this List[T]) Append(e T) Seq[T] {
 }
 
 func (this List[T]) Concat(that Seq[T]) Seq[T] {
-	return iterateAdd(that, this.Reverse()).Reverse()
+	return iterate(that, this.Reverse(), add[T]).Reverse()
 }

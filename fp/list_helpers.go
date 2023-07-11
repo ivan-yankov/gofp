@@ -8,11 +8,15 @@ func emptyList[T any]() Seq[T] {
 	}
 }
 
-func iterateAdd[T any](seq Seq[T], acc Seq[T]) Seq[T] {
+func iterate[A, B any](seq Seq[A], acc B, f func(A, B) B) B {
 	if seq.IsEmpty() {
 		return acc
-	} else {
-		v, _ := seq.HeadOption().Get()
-		return iterateAdd(seq.Tail(), acc.Add(v))
 	}
+
+	v, _ := seq.HeadOption().Get()
+	return iterate(seq.Tail(), f(v, acc), f)
+}
+
+func add[T any](e T, acc Seq[T]) Seq[T] {
+	return acc.Add(e)
 }
