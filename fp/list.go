@@ -128,3 +128,25 @@ func (this List[T]) Size() int {
 	f := func(_ T, acc int) int { return acc + 1 }
 	return iterate[T, int](this, 0, f)
 }
+
+func (this List[T]) Exists(p func(T) bool) bool {
+	f := func(e T, acc bool) bool { return acc || p(e) }
+	return iterate[T, bool](this, false, f)
+}
+
+func (this List[T]) Filter(p func(T) bool) Seq[T] {
+	f := func(e T, acc Seq[T]) Seq[T] {
+		if p(e) {
+			return acc.Add(e)
+		} else {
+			return acc
+		}
+	}
+
+	return iterate[T, Seq[T]](this, emptyList[T](), f).Reverse()
+}
+
+func (this List[T]) FilterNot(p func(T) bool) Seq[T] {
+	f := func(e T) bool { return !p(e) }
+	return this.Filter(f)
+}

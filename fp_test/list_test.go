@@ -149,6 +149,7 @@ func TestListContains(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3, 4).ContainsElement(1))
 	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).ContainsElement(5))
 	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).ContainsElement(3))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 3, 5).ContainsElement(3))
 }
 
 func TestListSize(t *testing.T) {
@@ -156,4 +157,31 @@ func TestListSize(t *testing.T) {
 	assert.Equal(t, 1, fp.ListOf(1).Size())
 	assert.Equal(t, 2, fp.ListOf(1, 2).Size())
 	assert.Equal(t, 3, fp.ListOf(1, 2, 3).Size())
+}
+
+func TestListExists(t *testing.T) {
+	f := func(x int) bool { return x > 5 }
+	assert.False(t, fp.ListOf[int]().Exists(f))
+	assert.False(t, fp.ListOf(1).Exists(f))
+	assert.False(t, fp.ListOf(1, 2, 3).Exists(f))
+	assert.True(t, fp.ListOf(6).Exists(f))
+	assert.True(t, fp.ListOf(1, 5, 8, 10).Exists(f))
+}
+
+func TestListFilter(t *testing.T) {
+	f := func(x int) bool { return x > 0 }
+	assert.True(t, fp.ListOf[int]().Filter(f).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(-1).Filter(f).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).Filter(f).Equals(fp.ListOf[int](1)))
+	assert.True(t, fp.ListOf(-5, 6, -7, 8, 9).Filter(f).Equals(fp.ListOf(6, 8, 9)))
+	assert.True(t, fp.ListOf(1, 2, 3).Filter(f).Equals(fp.ListOf(1, 2, 3)))
+}
+
+func TestListFilterNot(t *testing.T) {
+	f := func(x int) bool { return x < 0 }
+	assert.True(t, fp.ListOf[int]().FilterNot(f).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(-1).FilterNot(f).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).FilterNot(f).Equals(fp.ListOf[int](1)))
+	assert.True(t, fp.ListOf(-5, 6, -7, 8, 9).FilterNot(f).Equals(fp.ListOf(6, 8, 9)))
+	assert.True(t, fp.ListOf(1, 2, 3).FilterNot(f).Equals(fp.ListOf(1, 2, 3)))
 }
