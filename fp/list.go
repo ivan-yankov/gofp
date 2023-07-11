@@ -8,29 +8,51 @@ type List[T any] struct {
 	empty bool
 }
 
-func ListTabulate[T any](n int, f func(int) T) Seq[T] {
+func ListOf[T any](elements ...T) Seq[T] {
 	var loop func(int, Seq[T]) Seq[T]
 	loop = func(i int, acc Seq[T]) Seq[T] {
-		if i == n {
+		if i < 0 {
 			return acc
 		} else {
-			return loop(i+1, acc.Add(f(i)))
+			return loop(i-1, acc.Add(elements[i]))
 		}
 	}
 
-	return loop(0, emptyList[T]()).Reverse()
+	return loop(len(elements)-1, emptyList[T]())
 }
 
-func ListOf[T any](elements ...T) Seq[T] {
-	return ListTabulate(len(elements), func(i int) T { return elements[i] })
+func ListRangeStep(from int, n int, step int) Seq[int] {
+	if n <= 0 || step < 0 {
+		return emptyList[int]()
+	}
+
+	var loop func(int, Seq[int]) Seq[int]
+	loop = func(i int, acc Seq[int]) Seq[int] {
+		if i == n {
+			return acc
+		} else {
+			return loop(i+1, acc.Add(from+i*step))
+		}
+	}
+
+	return loop(0, emptyList[int]()).Reverse()
+}
+
+func ListRange(from int, n int) Seq[int] {
+	return ListRangeStep(from, n, 1)
+}
+
+func ListTabulate[T any](n int, f func(int) T) Seq[T] {
+	indexes := ListRange(0, n)
+	fAcc := func(i int, acc Seq[T]) Seq[T] {
+		return acc.Add(f(i))
+	}
+
+	return iterate[int, Seq[T]](indexes, emptyList[T](), fAcc).Reverse()
 }
 
 func ListFill[T any](n int, e T) Seq[T] {
 	return ListTabulate(n, func(i int) T { return e })
-}
-
-func ListRange(from int, n int) Seq[int] {
-	return ListTabulate(n, func(i int) int { return from + i })
 }
 
 func (x List[T]) Add(e T) Seq[T] {
