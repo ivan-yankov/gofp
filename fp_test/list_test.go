@@ -138,17 +138,17 @@ func TestListAppend(t *testing.T) {
 func TestListConcat(t *testing.T) {
 	assert.True(t, fp.ListOf[int]().Concat(fp.ListOf[int]()).Equals(fp.ListOf[int]()))
 	assert.True(t, fp.ListOf[int]().Concat(fp.ListOf(1)).Equals(fp.ListOf(1)))
-	assert.True(t, fp.ListOf[int](1).Concat(fp.ListOf(2, 3)).Equals(fp.ListOf(1, 2, 3)))
-	assert.True(t, fp.ListOf[int](1, 2, 3).Concat(fp.ListOf(4, 5)).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1).Concat(fp.ListOf(2, 3)).Equals(fp.ListOf(1, 2, 3)))
+	assert.True(t, fp.ListOf(1, 2, 3).Concat(fp.ListOf(4, 5)).Equals(fp.ListOf(1, 2, 3, 4, 5)))
 }
 
 func TestListContains(t *testing.T) {
 	assert.False(t, fp.ListOf[int]().ContainsElement(1))
-	assert.True(t, fp.ListOf[int](1).ContainsElement(1))
-	assert.False(t, fp.ListOf[int](2, 3, 4).ContainsElement(1))
-	assert.True(t, fp.ListOf[int](1, 2, 3, 4).ContainsElement(1))
-	assert.True(t, fp.ListOf[int](1, 2, 3, 4, 5).ContainsElement(5))
-	assert.True(t, fp.ListOf[int](1, 2, 3, 4, 5).ContainsElement(3))
+	assert.True(t, fp.ListOf(1).ContainsElement(1))
+	assert.False(t, fp.ListOf(2, 3, 4).ContainsElement(1))
+	assert.True(t, fp.ListOf(1, 2, 3, 4).ContainsElement(1))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).ContainsElement(5))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).ContainsElement(3))
 }
 
 func TestListSize(t *testing.T) {
