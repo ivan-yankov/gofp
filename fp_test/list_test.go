@@ -325,13 +325,13 @@ func TestListIndexes(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Indexes().Equals(fp.ListOf(0, 1, 2, 3, 4)))
 }
 
-// func TestListZipWithIndex(t *testing.T) {
-// 	exp := fp.ListOf(
-// 		fp.PairOf("zero", 0),
-// 		fp.PairOf("one", 1),
-// 		fp.PairOf("two", 2),
-// 	)
+func TestListZipWithIndex(t *testing.T) {
+	exp := fp.ListOf(
+		fp.PairOf("zero", 0),
+		fp.PairOf("one", 1),
+		fp.PairOf("two", 2),
+	)
 
-// 	assert.True(t, fp.ListOf[string]().ZipWithIndex().IsEmpty())
-// 	assert.True(t, fp.ListOf("zero", "one", "two").ZipWithIndex().Equals(exp))
-// }
+	assert.True(t, fp.ListZipWithIndex(fp.ListOf[string]()).IsEmpty())
+	assert.True(t, fp.ListZipWithIndex(fp.ListOf("zero", "one", "two")).Equals(exp))
+}

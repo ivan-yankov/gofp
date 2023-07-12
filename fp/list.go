@@ -9,27 +9,61 @@ type List[T any] struct {
 }
 
 func ListOf[T any](elements ...T) Seq[T] {
-	return seqOf(emptyList[T], elements)
+	i := len(elements) - 1
+	inc := func(x int) int { return x - 1 }
+	p := func(x int) bool { return x < 0 }
+	f := func(x int, acc Seq[T]) Seq[T] { return acc.Add(elements[x]) }
+	return loop(i, inc, p, f, emptyList[T]())
 }
 
 func ListRangeStep(from int, n int, step int) Seq[int] {
-	return seqRangeStep(emptyList[int], from, n, step)
+	if n <= 0 || step < 0 {
+		return emptyList[int]()
+	}
+
+	inc := func(x int) int { return x + 1 }
+	p := func(x int) bool { return x == n }
+	f := func(x int, acc Seq[int]) Seq[int] { return acc.Add(from + x*step) }
+	return loop(0, inc, p, f, emptyList[int]()).Reverse()
 }
 
 func ListRange(from int, n int) Seq[int] {
-	return seqRange(emptyList[int], from, n)
+	return ListRangeStep(from, n, 1)
 }
 
 func ListTabulate[T any](n int, f func(int) T) Seq[T] {
-	return seqTabulate(emptyList[int], emptyList[T], n, f)
+	indexes := ListRange(0, n)
+	fAcc := func(i int, acc Seq[T]) Seq[T] {
+		return acc.Add(f(i))
+	}
+
+	return iterate[int, Seq[T]](indexes, fAcc, emptyList[T]()).Reverse()
 }
 
 func ListFill[T any](n int, e T) Seq[T] {
-	return seqFill(emptyList[int], emptyList[T], n, e)
+	return ListTabulate(n, func(i int) T { return e })
 }
 
 func ListZip[A, B any](sa Seq[A], sb Seq[B]) Seq[Pair[A, B]] {
-	return seqZip(emptyList[Pair[A, B]], sa, sb)
+	type T = Seq[Pair[A, B]]
+
+	var it func(Seq[A], Seq[B], T) T
+	it = func(s1 Seq[A], s2 Seq[B], acc T) T {
+		if s1.IsEmpty() || s2.IsEmpty() {
+			return acc
+		}
+
+		a, _ := s1.HeadOption().Get()
+		b, _ := s2.HeadOption().Get()
+		return it(s1.Tail(), s2.Tail(), acc.Add(PairOf(a, b)))
+	}
+
+	return it(sa, sb, emptyList[Pair[A, B]]()).Reverse()
+}
+
+// implemented not as interface method due to generic instantiation cycle
+func ListZipWithIndex[T any](seq Seq[T]) Seq[Pair[T, int]] {
+	return ListZip[T, int](seq, seq.Indexes())
 }
 
 func (this List[T]) Add(e T) Seq[T] {
@@ -145,18 +179,6 @@ func (this List[T]) Distinct() Seq[T] {
 }
 
 func (this List[T]) Drop(n int) Seq[T] {
-	// if n <= 0 {
-	// 	return this
-	// }
-
-	// f := func(i int, e T, acc Seq[T]) Seq[T] {
-	// 	if i < n {
-	// 		return acc
-	// 	}
-	// 	return acc.Add(e)
-	// }
-
-	// return iterateCount[T, Seq[T]](this, f, emptyList[T]()).Reverse()
 	return iterateWhile[T](this, n, true)
 }
 
@@ -176,18 +198,6 @@ func (this List[T]) DropWhile(p func(e T) bool) Seq[T] {
 }
 
 func (this List[T]) Take(n int) Seq[T] {
-	// if n <= 0 {
-	// 	return emptyList[T]()
-	// }
-
-	// f := func(i int, e T, acc Seq[T]) Seq[T] {
-	// 	if i < n {
-	// 		return acc.Add(e)
-	// 	}
-	// 	return acc
-	// }
-
-	// return iterateCount[T, Seq[T]](this, f, emptyList[T]()).Reverse()
 	return iterateWhile[T](this, n, false)
 }
 
@@ -226,7 +236,3 @@ func (this List[T]) Indexes() Seq[int] {
 	f := func(i int, _ T, acc Seq[int]) Seq[int] { return acc.Add(i) }
 	return iterateCount[T, Seq[int]](this, f, emptyList[int]()).Reverse()
 }
-
-// func (this List[T]) ZipWithIndex() Seq[Pair[T, int]] {
-// 	return ListZip[T, int](this, this.Indexes())
-// }
