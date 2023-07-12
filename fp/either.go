@@ -28,6 +28,26 @@ func RightOf[L, R any](value R) Either[L, R] {
 	}
 }
 
+func MapEither[L, A, B any](x Either[L, A], f func(A) B) Either[L, B] {
+	if x.IsRight() {
+		v, _ := x.GetRight().Get()
+		return RightOf[L, B](f(v))
+	}
+
+	v, _ := x.GetLeft().Get()
+	return LeftOf[L, B](v)
+}
+
+func FlatMapEither[L, A, B any](x Either[L, A], f func(A) Either[L, B]) Either[L, B] {
+	if x.IsRight() {
+		v, _ := x.GetRight().Get()
+		return f(v)
+	}
+
+	v, _ := x.GetLeft().Get()
+	return LeftOf[L, B](v)
+}
+
 func (this either[L, R]) IsLeft() bool {
 	return this.left.IsDefined()
 }
@@ -61,24 +81,4 @@ func (this either[L, R]) Swap() Either[R, L] {
 		left:  this.right,
 		right: this.left,
 	}
-}
-
-func MapEither[L, A, B any](x Either[L, A], f func(A) B) Either[L, B] {
-	if x.IsRight() {
-		v, _ := x.GetRight().Get()
-		return RightOf[L, B](f(v))
-	}
-
-	v, _ := x.GetLeft().Get()
-	return LeftOf[L, B](v)
-}
-
-func FlatMapEither[L, A, B any](x Either[L, A], f func(A) Either[L, B]) Either[L, B] {
-	if x.IsRight() {
-		v, _ := x.GetRight().Get()
-		return f(v)
-	}
-
-	v, _ := x.GetLeft().Get()
-	return LeftOf[L, B](v)
 }
