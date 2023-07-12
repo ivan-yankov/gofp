@@ -48,10 +48,10 @@ func (this either[L, R]) Fold(left func(L), right func(R)) {
 	if this.IsLeft() {
 		v, _ := this.GetLeft().Get()
 		left(v)
-	} else {
-		v, _ := this.GetRight().Get()
-		right(v)
 	}
+
+	v, _ := this.GetRight().Get()
+	right(v)
 }
 
 func (this either[L, R]) Swap() Either[R, L] {
@@ -65,18 +65,18 @@ func MapEither[L, A, B any](x Either[L, A], f func(A) B) Either[L, B] {
 	if x.IsRight() {
 		v, _ := x.GetRight().Get()
 		return RightOf[L, B](f(v))
-	} else {
-		v, _ := x.GetLeft().Get()
-		return LeftOf[L, B](v)
 	}
+
+	v, _ := x.GetLeft().Get()
+	return LeftOf[L, B](v)
 }
 
 func FlatMapEither[L, A, B any](x Either[L, A], f func(A) Either[L, B]) Either[L, B] {
 	if x.IsRight() {
 		v, _ := x.GetRight().Get()
 		return f(v)
-	} else {
-		v, _ := x.GetLeft().Get()
-		return LeftOf[L, B](v)
 	}
+
+	v, _ := x.GetLeft().Get()
+	return LeftOf[L, B](v)
 }
