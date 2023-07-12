@@ -185,3 +185,16 @@ func TestListFilterNot(t *testing.T) {
 	assert.True(t, fp.ListOf(-5, 6, -7, 8, 9).FilterNot(f).Equals(fp.ListOf(6, 8, 9)))
 	assert.True(t, fp.ListOf(1, 2, 3).FilterNot(f).Equals(fp.ListOf(1, 2, 3)))
 }
+
+func TestListFind(t *testing.T) {
+	f := func(x int) bool { return x > 0 }
+	assert.Equal(t, 0, fp.ListOf[int]().Find(f).GetOrElse(0))
+	assert.Equal(t, 0, fp.ListOf(-1).Find(f).GetOrElse(0))
+	assert.Equal(t, 1, fp.ListOf(1).Find(f).GetOrElse(0))
+	assert.Equal(t, 6, fp.ListOf(-5, 6, -7, 8, 9).Find(f).GetOrElse(0))
+	assert.Equal(t, 1, fp.ListOf(1, 2, 3).Find(f).GetOrElse(0))
+
+	assert.Equal(t, 1, fp.ListOf(1, 2, 3).Find(func(x int) bool { return x == 1 }).GetOrElse(0))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3).Find(func(x int) bool { return x == 2 }).GetOrElse(0))
+	assert.Equal(t, 3, fp.ListOf(1, 2, 3).Find(func(x int) bool { return x == 3 }).GetOrElse(0))
+}

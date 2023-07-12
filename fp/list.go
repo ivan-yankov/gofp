@@ -150,3 +150,7 @@ func (this List[T]) FilterNot(p func(T) bool) Seq[T] {
 	f := func(e T) bool { return !p(e) }
 	return this.Filter(f)
 }
+
+func (this List[T]) Find(p func(T) bool) Option[T] {
+	return this.Filter(p).HeadOption()
+}

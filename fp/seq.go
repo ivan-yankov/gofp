@@ -16,11 +16,11 @@ type Seq[T any] interface {
 	Exists(func(T) bool) bool
 	Filter(func(T) bool) Seq[T]
 	FilterNot(func(T) bool) Seq[T]
-	// Find(func(T) bool) Option[T]
+	Find(func(T) bool) Option[T]
 	// Diff(Seq[T]) Seq[T] // all elements in this which are not in that (including duplicates)
-	// Distinct() Seq[T]
-	// Drop() Seq[T]
-	// DropRight() Seq[T]
+	// Distinct() Seq[T] // check if already added to acc during iteration
+	// Drop(int) Seq[T]
+	// DropRight(int) Seq[T]
 	// DropWhile(func(T) bool) Seq[T]
 	// ForAll(func(T) bool) bool
 	// ForEach(func(T))
