@@ -47,3 +47,29 @@ func loop[T any](
 	}
 	return loop(inc(i), inc, p, f, f(i, acc))
 }
+
+func iterateWhile[T any](seq Seq[T], n int, drop bool) Seq[T] {
+	if n <= 0 {
+		if drop {
+			return seq
+		}
+		return emptyList[T]()
+	}
+
+	f := func(i int, e T, acc Seq[T]) Seq[T] {
+		cond := func() bool {
+			if drop {
+				return i < n
+			}
+			return i >= n
+		}
+
+		if cond() {
+			return acc
+		}
+
+		return acc.Add(e)
+	}
+
+	return iterateCount[T, Seq[T]](seq, f, emptyList[T]()).Reverse()
+}

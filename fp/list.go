@@ -145,18 +145,19 @@ func (this List[T]) Distinct() Seq[T] {
 }
 
 func (this List[T]) Drop(n int) Seq[T] {
-	if n <= 0 {
-		return this
-	}
+	// if n <= 0 {
+	// 	return this
+	// }
 
-	f := func(i int, e T, acc Seq[T]) Seq[T] {
-		if i < n {
-			return acc
-		}
-		return acc.Add(e)
-	}
+	// f := func(i int, e T, acc Seq[T]) Seq[T] {
+	// 	if i < n {
+	// 		return acc
+	// 	}
+	// 	return acc.Add(e)
+	// }
 
-	return iterateCount[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+	// return iterateCount[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+	return iterateWhile[T](this, n, true)
 }
 
 func (this List[T]) DropRight(n int) Seq[T] {
@@ -175,18 +176,19 @@ func (this List[T]) DropWhile(p func(e T) bool) Seq[T] {
 }
 
 func (this List[T]) Take(n int) Seq[T] {
-	if n <= 0 {
-		return emptyList[T]()
-	}
+	// if n <= 0 {
+	// 	return emptyList[T]()
+	// }
 
-	f := func(i int, e T, acc Seq[T]) Seq[T] {
-		if i < n {
-			return acc.Add(e)
-		}
-		return acc
-	}
+	// f := func(i int, e T, acc Seq[T]) Seq[T] {
+	// 	if i < n {
+	// 		return acc.Add(e)
+	// 	}
+	// 	return acc
+	// }
 
-	return iterateCount[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+	// return iterateCount[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+	return iterateWhile[T](this, n, false)
 }
 
 func (this List[T]) TakeRight(n int) Seq[T] {
@@ -219,3 +221,12 @@ func (this List[T]) ForEach(f func(T) Unit) Unit {
 	fi := func(e T, acc Unit) Unit { f(e); return GetUnit() }
 	return iterate[T, Unit](this, fi, GetUnit())
 }
+
+func (this List[T]) Indexes() Seq[int] {
+	f := func(i int, _ T, acc Seq[int]) Seq[int] { return acc.Add(i) }
+	return iterateCount[T, Seq[int]](this, f, emptyList[int]()).Reverse()
+}
+
+// func (this List[T]) ZipWithIndex() Seq[Pair[T, int]] {
+// 	return ListZip[T, int](this, this.Indexes())
+// }

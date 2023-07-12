@@ -318,3 +318,20 @@ func TestListForEach(t *testing.T) {
 	fp.ListOf(1, 2, 3, 4, 5).ForEach(f)
 	assert.Equal(t, "1 2 3 4 5", strings.Trim(s, " "))
 }
+
+func TestListIndexes(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().Indexes().IsEmpty())
+	assert.True(t, fp.ListOf(1).Indexes().Equals(fp.ListOf(0)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Indexes().Equals(fp.ListOf(0, 1, 2, 3, 4)))
+}
+
+// func TestListZipWithIndex(t *testing.T) {
+// 	exp := fp.ListOf(
+// 		fp.PairOf("zero", 0),
+// 		fp.PairOf("one", 1),
+// 		fp.PairOf("two", 2),
+// 	)
+
+// 	assert.True(t, fp.ListOf[string]().ZipWithIndex().IsEmpty())
+// 	assert.True(t, fp.ListOf("zero", "one", "two").ZipWithIndex().Equals(exp))
+// }
