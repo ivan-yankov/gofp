@@ -22,9 +22,9 @@ type Seq[T any] interface {
 	Drop(int) Seq[T]
 	DropRight(int) Seq[T]
 	DropWhile(func(T) bool) Seq[T]
-	// Take(int) Seq[T]
-	// TakeRight(int) Seq[T]
-	// TakeWhile(func(T) bool) Seq[T]
+	Take(int) Seq[T]
+	TakeRight(int) Seq[T]
+	TakeWhile(func(T) bool) Seq[T]
 	// ForAll(func(T) bool) bool
 	// ForEach(func(T))
 	// IndexOf(T) int

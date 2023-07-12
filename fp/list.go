@@ -185,3 +185,39 @@ func (this List[T]) DropWhile(p func(e T) bool) Seq[T] {
 
 	return iterate[T, Seq[T]](this, f, emptyList[T]()).Reverse()
 }
+
+func (this List[T]) Take(n int) Seq[T] {
+	if n <= 0 {
+		return emptyList[T]()
+	}
+
+	f := func(i int, e T, acc Seq[T]) Seq[T] {
+		if i < n {
+			return acc.Add(e)
+		}
+		return acc
+	}
+
+	return iterateCount[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+}
+
+func (this List[T]) TakeRight(n int) Seq[T] {
+	return this.Reverse().Take(n).Reverse()
+}
+
+func (this List[T]) TakeWhile(p func(e T) bool) Seq[T] {
+	type Acc struct {
+		result Seq[T]
+		flag   bool
+	}
+
+	f := func(e T, acc Acc) Acc {
+		if acc.flag && p(e) {
+			return Acc{acc.result.Add(e), true}
+		}
+		return Acc{acc.result, false}
+	}
+
+	r := iterate[T, Acc](this, f, Acc{emptyList[T](), true})
+	return r.result.Reverse()
+}

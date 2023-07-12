@@ -247,3 +247,34 @@ func TestListDropWhile(t *testing.T) {
 	assert.True(t, fp.ListOf(-1, -2, 3, 4, 5).DropWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf(3, 4, 5)))
 	assert.True(t, fp.ListOf(-1, -2, 3, -4, 5).DropWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf(3, -4, 5)))
 }
+
+func TestListTake(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().Take(1).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).Take(1).Equals(fp.ListOf(1)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Take(5).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Take(6).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Take(7).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 3).Take(0).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3).Take(-1).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Take(2).Equals(fp.ListOf(1, 2)))
+}
+
+func TestListTakeRight(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().TakeRight(1).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).TakeRight(1).Equals(fp.ListOf(1)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).TakeRight(5).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).TakeRight(6).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).TakeRight(7).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 3).TakeRight(0).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3).TakeRight(-1).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).TakeRight(2).Equals(fp.ListOf(4, 5)))
+}
+
+func TestListTakeWhile(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().TakeWhile(func(x int) bool { return x > 0 }).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).TakeWhile(func(x int) bool { return x > 0 }).Equals(fp.ListOf(1)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).TakeWhile(func(x int) bool { return x > 0 }).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).TakeWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(-1, -2, 3, 4, 5).TakeWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf(-1, -2)))
+	assert.True(t, fp.ListOf(-1, -2, 3, -4, 5).TakeWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf(-1, -2)))
+}
