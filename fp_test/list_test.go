@@ -298,6 +298,7 @@ func TestListForEach(t *testing.T) {
 
 	fp.ListOf[int]().ForEach(f)
 	assert.Equal(t, "", s)
+
 	fp.ListOf(1, 2, 3, 4, 5).ForEach(f)
 	assert.Equal(t, "1 2 3 4 5", strings.Trim(s, " "))
 }
