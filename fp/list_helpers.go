@@ -17,6 +17,20 @@ func iterate[A, B any](seq Seq[A], f func(A, B) B, acc B) B {
 	return iterate(seq.Tail(), f, f(v, acc))
 }
 
+func iterateCount[A, B any](seq Seq[A], f func(int, A, B) B, acc B) B {
+	var it func(seq Seq[A], f func(int, A, B) B, acc B, i int) B
+	it = func(seq Seq[A], f func(int, A, B) B, acc B, i int) B {
+		if seq.IsEmpty() {
+			return acc
+		}
+
+		v, _ := seq.HeadOption().Get()
+		return it(seq.Tail(), f, f(i, v, acc), i+1)
+	}
+
+	return it(seq, f, acc, 0)
+}
+
 func add[T any](e T, acc Seq[T]) Seq[T] {
 	return acc.Add(e)
 }

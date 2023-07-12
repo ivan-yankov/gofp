@@ -44,13 +44,13 @@ func ListFill[T any](n int, e T) Seq[T] {
 	return ListTabulate(n, func(i int) T { return e })
 }
 
-func (x List[T]) Add(e T) Seq[T] {
-	if x.NonEmpty() {
+func (this List[T]) Add(e T) Seq[T] {
+	if this.NonEmpty() {
 		return List[T]{
 			head: e,
 			tail: List[T]{
-				head:  x.head,
-				tail:  x.tail,
+				head:  this.head,
+				tail:  this.tail,
 				empty: false,
 			},
 			empty: false,
@@ -153,5 +153,35 @@ func (this List[T]) Distinct() Seq[T] {
 		}
 		return acc.Add(e)
 	}
+	return iterate[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+}
+
+func (this List[T]) Drop(n int) Seq[T] {
+	if n <= 0 {
+		return this
+	}
+
+	f := func(i int, e T, acc Seq[T]) Seq[T] {
+		if i < n {
+			return acc
+		}
+		return acc.Add(e)
+	}
+
+	return iterateCount[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+}
+
+func (this List[T]) DropRight(n int) Seq[T] {
+	return this.Reverse().Drop(n).Reverse()
+}
+
+func (this List[T]) DropWhile(p func(e T) bool) Seq[T] {
+	f := func(e T, acc Seq[T]) Seq[T] {
+		if acc.NonEmpty() || !p(e) {
+			return acc.Add(e)
+		}
+		return acc
+	}
+
 	return iterate[T, Seq[T]](this, f, emptyList[T]()).Reverse()
 }

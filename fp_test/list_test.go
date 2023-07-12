@@ -216,3 +216,34 @@ func TestListDistinct(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Distinct().Equals(fp.ListOf(1, 2, 3, 4, 5)))
 	assert.True(t, fp.ListOf(1, 2, 2, 3, 3, 4, 5, 5).Distinct().Equals(fp.ListOf(1, 2, 3, 4, 5)))
 }
+
+func TestListDrop(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().Drop(1).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).Drop(1).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Drop(5).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Drop(6).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Drop(7).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3).Drop(0).Equals(fp.ListOf(1, 2, 3)))
+	assert.True(t, fp.ListOf(1, 2, 3).Drop(-1).Equals(fp.ListOf(1, 2, 3)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Drop(2).Equals(fp.ListOf(3, 4, 5)))
+}
+
+func TestListDropRight(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().DropRight(1).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).DropRight(1).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).DropRight(5).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).DropRight(6).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).DropRight(7).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3).DropRight(0).Equals(fp.ListOf(1, 2, 3)))
+	assert.True(t, fp.ListOf(1, 2, 3).DropRight(-1).Equals(fp.ListOf(1, 2, 3)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).DropRight(2).Equals(fp.ListOf(1, 2, 3)))
+}
+
+func TestListDropWhile(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().DropWhile(func(x int) bool { return x > 0 }).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).DropWhile(func(x int) bool { return x > 0 }).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).DropWhile(func(x int) bool { return x > 0 }).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).DropWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(-1, -2, 3, 4, 5).DropWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf(3, 4, 5)))
+	assert.True(t, fp.ListOf(-1, -2, 3, -4, 5).DropWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf(3, -4, 5)))
+}
