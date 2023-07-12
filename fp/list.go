@@ -140,3 +140,18 @@ func (this List[T]) FilterNot(p func(T) bool) Seq[T] {
 func (this List[T]) Find(p func(T) bool) Option[T] {
 	return this.Filter(p).HeadOption()
 }
+
+func (this List[T]) Diff(that Seq[T]) Seq[T] {
+	f := func(e T) bool { return that.ContainsElement(e) }
+	return this.FilterNot(f)
+}
+
+func (this List[T]) Distinct() Seq[T] {
+	f := func(e T, acc Seq[T]) Seq[T] {
+		if acc.ContainsElement(e) {
+			return acc
+		}
+		return acc.Add(e)
+	}
+	return iterate[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+}

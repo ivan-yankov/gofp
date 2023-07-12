@@ -198,3 +198,21 @@ func TestListFind(t *testing.T) {
 	assert.Equal(t, 2, fp.ListOf(1, 2, 3).Find(func(x int) bool { return x == 2 }).GetOrElse(0))
 	assert.Equal(t, 3, fp.ListOf(1, 2, 3).Find(func(x int) bool { return x == 3 }).GetOrElse(0))
 }
+
+func TestListDiff(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().Diff(fp.ListOf[int]()).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf[int]().Diff(fp.ListOf(1)).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).Diff(fp.ListOf[int]()).Equals(fp.ListOf(1)))
+
+	assert.True(t, fp.ListOf(1).Diff(fp.ListOf(1)).Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).Diff(fp.ListOf(2)).Equals(fp.ListOf(1)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Diff(fp.ListOf(2, 4)).Equals(fp.ListOf(1, 3, 5)))
+	assert.True(t, fp.ListOf(1, 2, 2, 3, 3, 4, 5, 5).Diff(fp.ListOf(2, 4)).Equals(fp.ListOf(1, 3, 3, 5, 5)))
+}
+
+func TestListDistinct(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().Distinct().Equals(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).Distinct().Equals(fp.ListOf(1)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Distinct().Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 2, 3, 3, 4, 5, 5).Distinct().Equals(fp.ListOf(1, 2, 3, 4, 5)))
+}
