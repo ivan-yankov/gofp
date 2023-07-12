@@ -79,6 +79,19 @@ func seqFill[T any](emptySeqInt func() Seq[int], emptySeq func() Seq[T], n int, 
 	return seqTabulate(emptySeqInt, emptySeq, n, func(i int) T { return e })
 }
 
-// func Zip[A, B any](sa Seq[A], sb Seq[B]) Seq[Pair[A, B]] {
+func seqZip[A, B any](emptySeq func() Seq[Pair[A, B]], sa Seq[A], sb Seq[B]) Seq[Pair[A, B]] {
+	type T = Seq[Pair[A, B]]
 
-// }
+	var it func(Seq[A], Seq[B], T) T
+	it = func(s1 Seq[A], s2 Seq[B], acc T) T {
+		if s1.IsEmpty() || s2.IsEmpty() {
+			return acc
+		}
+
+		a, _ := s1.HeadOption().Get()
+		b, _ := s2.HeadOption().Get()
+		return it(s1.Tail(), s2.Tail(), acc.Add(PairOf(a, b)))
+	}
+
+	return it(sa, sb, emptySeq()).Reverse()
+}

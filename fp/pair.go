@@ -10,6 +10,10 @@ type pair[A, B any] struct {
 	b B
 }
 
+func PairOf[A, B any](a A, b B) Pair[A, B] {
+	return pair[A, B]{a, b}
+}
+
 func (this pair[A, _]) GetA() A {
 	return this.a
 }

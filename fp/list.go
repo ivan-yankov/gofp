@@ -28,6 +28,10 @@ func ListFill[T any](n int, e T) Seq[T] {
 	return seqFill(emptyList[int], emptyList[T], n, e)
 }
 
+func ListZip[A, B any](sa Seq[A], sb Seq[B]) Seq[Pair[A, B]] {
+	return seqZip(emptyList[Pair[A, B]], sa, sb)
+}
+
 func (this List[T]) Add(e T) Seq[T] {
 	if this.NonEmpty() {
 		return List[T]{

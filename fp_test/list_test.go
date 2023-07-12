@@ -66,6 +66,22 @@ func TestListFill(t *testing.T) {
 	assert.True(t, fp.ListFill(5, 1).Equals(fp.ListOf(1, 1, 1, 1, 1)))
 }
 
+func TestListZip(t *testing.T) {
+	exp := fp.ListOf(
+		fp.PairOf("zero", 0),
+		fp.PairOf("one", 1),
+		fp.PairOf("two", 2),
+	)
+
+	assert.True(t, fp.ListZip(fp.ListOf[int](), fp.ListOf[string]()).IsEmpty())
+	assert.True(t, fp.ListZip(fp.ListOf(1, 2), fp.ListOf[string]()).IsEmpty())
+	assert.True(t, fp.ListZip(fp.ListOf[int](), fp.ListOf("1", "2")).IsEmpty())
+
+	assert.True(t, fp.ListZip(fp.ListOf("zero", "one", "two"), fp.ListOf(0, 1, 2)).Equals(exp))
+	assert.True(t, fp.ListZip(fp.ListOf("zero", "one", "two"), fp.ListOf(0, 1, 2, 3, 4)).Equals(exp))
+	assert.True(t, fp.ListZip(fp.ListOf("zero", "one", "two", "next", "one more"), fp.ListOf(0, 1, 2)).Equals(exp))
+}
+
 func TestListAdd(t *testing.T) {
 	assert.True(t, fp.ListOf[int]().Add(1).Equals(fp.ListOf(1)))
 	assert.True(t, fp.ListOf(1).Add(2).Equals(fp.ListOf(2, 1)))
