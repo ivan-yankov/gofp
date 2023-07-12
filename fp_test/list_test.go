@@ -1,6 +1,8 @@
 package fp_test
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/ivan-yankov/gofp/fp"
@@ -277,4 +279,25 @@ func TestListTakeWhile(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).TakeWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf[int]()))
 	assert.True(t, fp.ListOf(-1, -2, 3, 4, 5).TakeWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf(-1, -2)))
 	assert.True(t, fp.ListOf(-1, -2, 3, -4, 5).TakeWhile(func(x int) bool { return x < 0 }).Equals(fp.ListOf(-1, -2)))
+}
+
+func TestListForAll(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().ForAll(func(x int) bool { return x == 0 }))
+	assert.True(t, fp.ListOf(1).ForAll(func(x int) bool { return x == 1 }))
+	assert.False(t, fp.ListOf(1).ForAll(func(x int) bool { return x == 0 }))
+	assert.True(t, fp.ListOf[int](1, 2, 3).ForAll(func(x int) bool { return x > 0 }))
+	assert.False(t, fp.ListOf[int](0, 1, 2).ForAll(func(x int) bool { return x > 0 }))
+}
+
+func TestListForEach(t *testing.T) {
+	var s = ""
+	f := func(x int) fp.Unit {
+		s = s + " " + fmt.Sprint(x)
+		return fp.GetUnit()
+	}
+
+	fp.ListOf[int]().ForEach(f)
+	assert.Equal(t, "", s)
+	fp.ListOf(1, 2, 3, 4, 5).ForEach(f)
+	assert.Equal(t, "1 2 3 4 5", strings.Trim(s, " "))
 }

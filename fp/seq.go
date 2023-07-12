@@ -25,8 +25,8 @@ type Seq[T any] interface {
 	Take(int) Seq[T]
 	TakeRight(int) Seq[T]
 	TakeWhile(func(T) bool) Seq[T]
-	// ForAll(func(T) bool) bool
-	// ForEach(func(T))
+	ForAll(func(T) bool) bool
+	ForEach(func(T) Unit) Unit
 	// IndexOf(T) int
 	// IndexOfFrom(T, int) int
 	// IndexOfWhere(func(T) bool) int

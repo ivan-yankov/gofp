@@ -5,7 +5,7 @@ type Either[L, R any] interface {
 	IsRight() bool
 	GetLeft() Option[L]
 	GetRight() Option[R]
-	Fold(func(L), func(R))
+	Fold(func(L), func(R)) Unit
 	Swap() Either[R, L]
 }
 
@@ -44,14 +44,16 @@ func (this either[L, R]) GetRight() Option[R] {
 	return this.right
 }
 
-func (this either[L, R]) Fold(left func(L), right func(R)) {
+func (this either[L, R]) Fold(left func(L), right func(R)) Unit {
 	if this.IsLeft() {
 		v, _ := this.GetLeft().Get()
 		left(v)
+	} else {
+		v, _ := this.GetRight().Get()
+		right(v)
 	}
 
-	v, _ := this.GetRight().Get()
-	right(v)
+	return GetUnit()
 }
 
 func (this either[L, R]) Swap() Either[R, L] {

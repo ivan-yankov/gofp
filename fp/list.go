@@ -221,3 +221,13 @@ func (this List[T]) TakeWhile(p func(e T) bool) Seq[T] {
 	r := iterate[T, Acc](this, f, Acc{emptyList[T](), true})
 	return r.result.Reverse()
 }
+
+func (this List[T]) ForAll(p func(T) bool) bool {
+	f := func(e T, acc bool) bool { return acc && p(e) }
+	return iterate[T, bool](this, f, true)
+}
+
+func (this List[T]) ForEach(f func(T) Unit) Unit {
+	fi := func(e T, acc Unit) Unit { f(e); return GetUnit() }
+	return iterate[T, Unit](this, fi, GetUnit())
+}
