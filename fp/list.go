@@ -302,3 +302,25 @@ func (this List[T]) IndexOfFrom(e T, from int) int {
 
 	return ListFoldCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
 }
+
+func (this List[T]) IndexOfWhere(p func(T) bool) int {
+	f := func(i int, e T, acc Option[int]) Option[int] {
+		if acc.NonDefined() && p(e) {
+			return SomeOf(i)
+		}
+		return acc
+	}
+
+	return ListFoldCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
+}
+
+func (this List[T]) IndexOfWhereFrom(p func(T) bool, from int) int {
+	f := func(i int, e T, acc Option[int]) Option[int] {
+		if i >= from && acc.NonDefined() && p(e) {
+			return SomeOf(i)
+		}
+		return acc
+	}
+
+	return ListFoldCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
+}

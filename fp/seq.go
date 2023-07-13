@@ -30,8 +30,8 @@ type Seq[T any] interface {
 	Indexes() Seq[int]
 	IndexOf(T) int
 	IndexOfFrom(T, int) int
-	// IndexOfWhere(func(T) bool) int
-	// IndexOfWhereFrom(func(T) bool, int) int
+	IndexOfWhere(func(T) bool) int
+	IndexOfWhereFrom(func(T) bool, int) int
 	// LastIndexOf(T) int
 	// LastIndexOfFrom(T, int) int
 	// LastIndexOfWhere(func(T) bool) int

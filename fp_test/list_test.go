@@ -383,3 +383,31 @@ func TestListIndexOfFrom(t *testing.T) {
 	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5, 6, 3, 9).IndexOfFrom(3, 3))
 	assert.Equal(t, -1, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfFrom(2, 2))
 }
+
+func TestListIndexOfWhere(t *testing.T) {
+	p := func(i int) func(int) bool { return func(x int) bool { return i == x } }
+
+	assert.Equal(t, -1, fp.ListOf[int]().IndexOfWhere(p(1)))
+	assert.Equal(t, 0, fp.ListOf(1).IndexOfWhere(p(1)))
+	assert.Equal(t, -1, fp.ListOf(2, 3, 4).IndexOfWhere(p(1)))
+	assert.Equal(t, 0, fp.ListOf(1, 2, 3, 4).IndexOfWhere(p(1)))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 5).IndexOfWhere(p(5)))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).IndexOfWhere(p(3)))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfWhere(p(3)))
+}
+
+func TestListIndexOfWhereFrom(t *testing.T) {
+	p := func(i int) func(int) bool { return func(x int) bool { return i == x } }
+
+	assert.Equal(t, -1, fp.ListOf[int]().IndexOfWhereFrom(p(1), 0))
+	assert.Equal(t, 0, fp.ListOf(1).IndexOfWhereFrom(p(1), 0))
+	assert.Equal(t, -1, fp.ListOf(2, 3, 4).IndexOfWhereFrom(p(1), 0))
+	assert.Equal(t, 0, fp.ListOf(1, 2, 3, 4).IndexOfWhereFrom(p(1), 0))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 5).IndexOfWhereFrom(p(5), 0))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).IndexOfWhereFrom(p(3), 0))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfWhereFrom(p(3), 0))
+
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfWhereFrom(p(3), 2))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5, 6, 3, 9).IndexOfWhereFrom(p(3), 3))
+	assert.Equal(t, -1, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfWhereFrom(p(2), 2))
+}
