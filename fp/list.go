@@ -53,9 +53,7 @@ func ListZip[A, B any](sa Seq[A], sb Seq[B]) Seq[Pair[A, B]] {
 			return acc
 		}
 
-		a, _ := s1.HeadOption().Get()
-		b, _ := s2.HeadOption().Get()
-		return it(s1.Tail(), s2.Tail(), acc.Add(PairOf(a, b)))
+		return it(s1.Tail(), s2.Tail(), acc.Add(PairOf(s1.HeadOption().Get(), s2.HeadOption().Get())))
 	}
 
 	return it(sa, sb, emptyList[Pair[A, B]]()).Reverse()

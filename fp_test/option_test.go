@@ -19,16 +19,9 @@ func TestNonDefined(t *testing.T) {
 	assert.True(t, fp.None[int]().NonDefined())
 }
 
-func TestGet_Some(t *testing.T) {
-	v, e := fp.SomeOf(1).Get()
-	assert.Equal(t, 1, v)
-	assert.Nil(t, e)
-}
-
-func TestGet_None(t *testing.T) {
-	_, e := fp.None[int]().Get()
-	assert.NotNil(t, e)
-	assert.Equal(t, "Unable to get value from None", e.Error())
+func TestGet(t *testing.T) {
+	assert.Equal(t, 1, fp.SomeOf(1).Get())
+	assert.Panics(t, func() { fp.None[int]().Get() })
 }
 
 func TestGetOrElse(t *testing.T) {

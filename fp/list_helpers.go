@@ -13,8 +13,7 @@ func iterate[A, B any](seq Seq[A], f func(A, B) B, acc B) B {
 		return acc
 	}
 
-	v, _ := seq.HeadOption().Get()
-	return iterate(seq.Tail(), f, f(v, acc))
+	return iterate(seq.Tail(), f, f(seq.HeadOption().Get(), acc))
 }
 
 func iterateCount[A, B any](seq Seq[A], f func(int, A, B) B, acc B) B {
@@ -24,8 +23,7 @@ func iterateCount[A, B any](seq Seq[A], f func(int, A, B) B, acc B) B {
 			return acc
 		}
 
-		v, _ := seq.HeadOption().Get()
-		return it(seq.Tail(), f, f(i, v, acc), i+1)
+		return it(seq.Tail(), f, f(i, seq.HeadOption().Get(), acc), i+1)
 	}
 
 	return it(seq, f, acc, 0)

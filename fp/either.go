@@ -30,22 +30,18 @@ func RightOf[L, R any](value R) Either[L, R] {
 
 func MapEither[L, A, B any](x Either[L, A], f func(A) B) Either[L, B] {
 	if x.IsRight() {
-		v, _ := x.GetRight().Get()
-		return RightOf[L, B](f(v))
+		return RightOf[L, B](f(x.GetRight().Get()))
 	}
 
-	v, _ := x.GetLeft().Get()
-	return LeftOf[L, B](v)
+	return LeftOf[L, B](x.GetLeft().Get())
 }
 
 func FlatMapEither[L, A, B any](x Either[L, A], f func(A) Either[L, B]) Either[L, B] {
 	if x.IsRight() {
-		v, _ := x.GetRight().Get()
-		return f(v)
+		return f(x.GetRight().Get())
 	}
 
-	v, _ := x.GetLeft().Get()
-	return LeftOf[L, B](v)
+	return LeftOf[L, B](x.GetLeft().Get())
 }
 
 func (this either[L, R]) IsLeft() bool {
@@ -66,11 +62,9 @@ func (this either[L, R]) GetRight() Option[R] {
 
 func (this either[L, R]) Fold(left func(L), right func(R)) Unit {
 	if this.IsLeft() {
-		v, _ := this.GetLeft().Get()
-		left(v)
+		left(this.GetLeft().Get())
 	} else {
-		v, _ := this.GetRight().Get()
-		right(v)
+		right(this.GetRight().Get())
 	}
 
 	return GetUnit()

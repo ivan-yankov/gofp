@@ -1,11 +1,9 @@
 package fp
 
-import "errors"
-
 type Option[T any] interface {
 	IsDefined() bool
 	NonDefined() bool
-	Get() (T, error)
+	Get() T
 	GetOrElse(T) T
 }
 
@@ -30,8 +28,7 @@ func None[T any]() Option[T] {
 
 func MapOption[A, B any](x Option[A], f func(A) B) Option[B] {
 	if x.IsDefined() {
-		v, _ := x.Get()
-		return SomeOf(f(v))
+		return SomeOf(f(x.Get()))
 	}
 
 	return None[B]()
@@ -39,8 +36,7 @@ func MapOption[A, B any](x Option[A], f func(A) B) Option[B] {
 
 func FlatMapOption[A, B any](x Option[A], f func(A) Option[B]) Option[B] {
 	if x.IsDefined() {
-		v, _ := x.Get()
-		return f(v)
+		return f(x.Get())
 	}
 
 	return None[B]()
@@ -54,19 +50,17 @@ func (this option[T]) NonDefined() bool {
 	return !this.defined
 }
 
-func (this option[T]) Get() (T, error) {
+func (this option[T]) Get() T {
 	if this.defined {
-		return this.value, nil
+		return this.value
 	}
 
-	var x T
-	return x, errors.New("Unable to get value from None")
+	panic("Unable to get value from None")
 }
 
 func (this option[T]) GetOrElse(y T) T {
 	if this.defined {
-		v, _ := this.Get()
-		return v
+		return this.Get()
 	}
 
 	return y
