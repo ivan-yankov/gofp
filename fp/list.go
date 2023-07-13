@@ -61,7 +61,7 @@ func ListZip[A, B any](sa Seq[A], sb Seq[B]) Seq[Pair[A, B]] {
 	return it(sa, sb, emptyList[Pair[A, B]]()).Reverse()
 }
 
-// implemented not as interface method due to generic instantiation cycle
+// implemented not as an interface method due to generic instantiation cycle error
 func ListZipWithIndex[T any](seq Seq[T]) Seq[Pair[T, int]] {
 	return ListZip[T, int](seq, seq.Indexes())
 }
@@ -235,4 +235,14 @@ func (this List[T]) ForEach(f func(T) Unit) Unit {
 func (this List[T]) Indexes() Seq[int] {
 	f := func(i int, _ T, acc Seq[int]) Seq[int] { return acc.Add(i) }
 	return iterateCount[T, Seq[int]](this, f, emptyList[int]()).Reverse()
+}
+
+func (this List[T]) IndexOf(e T) int {
+	f := func(i int, ei T, acc Option[int]) Option[int] {
+		if reflect.DeepEqual(e, ei) && acc.NonDefined() {
+			return SomeOf(i)
+		}
+		return acc
+	}
+	return iterateCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
 }

@@ -335,3 +335,13 @@ func TestListZipWithIndex(t *testing.T) {
 	assert.True(t, fp.ListZipWithIndex(fp.ListOf[string]()).IsEmpty())
 	assert.True(t, fp.ListZipWithIndex(fp.ListOf("zero", "one", "two")).Equals(exp))
 }
+
+func TestListIndexOf(t *testing.T) {
+	assert.Equal(t, -1, fp.ListOf[int]().IndexOf(1))
+	assert.Equal(t, 0, fp.ListOf(1).IndexOf(1))
+	assert.Equal(t, -1, fp.ListOf(2, 3, 4).IndexOf(1))
+	assert.Equal(t, 0, fp.ListOf(1, 2, 3, 4).IndexOf(1))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 5).IndexOf(5))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).IndexOf(3))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOf(3))
+}
