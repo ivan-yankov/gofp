@@ -32,10 +32,10 @@ type Seq[T any] interface {
 	IndexOfFrom(T, int) int
 	IndexOfWhere(func(T) bool) int
 	IndexOfWhereFrom(func(T) bool, int) int
-	// LastIndexOf(T) int
-	// LastIndexOfFrom(T, int) int
-	// LastIndexOfWhere(func(T) bool) int
-	// LastIndexOfWhereFrom(func(T) bool, int) int
+	LastIndexOf(T) int
+	LastIndexOfFrom(T, int) int
+	LastIndexOfWhere(func(T) bool) int
+	LastIndexOfWhereFrom(func(T) bool, int) int
 	// IsValidIndex(int) bool
 	// ContainsSlice(Seq[T]) bool
 	// StartsWith(Seq[T]) bool

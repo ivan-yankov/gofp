@@ -300,3 +300,31 @@ func (this List[T]) IndexOfWhereFrom(p func(T) bool, from int) int {
 	}
 	return findIndex[T](this, f)
 }
+
+func (this List[T]) LastIndexOf(e T) int {
+	p := func(_ int, ei T, acc Option[int]) bool {
+		return reflect.DeepEqual(e, ei)
+	}
+	return findIndex[T](this, p)
+}
+
+func (this List[T]) LastIndexOfFrom(e T, from int) int {
+	p := func(i int, ei T, acc Option[int]) bool {
+		return i >= from && reflect.DeepEqual(e, ei)
+	}
+	return findIndex[T](this, p)
+}
+
+func (this List[T]) LastIndexOfWhere(p func(T) bool) int {
+	f := func(i int, e T, acc Option[int]) bool {
+		return p(e)
+	}
+	return findIndex[T](this, f)
+}
+
+func (this List[T]) LastIndexOfWhereFrom(p func(T) bool, from int) int {
+	f := func(i int, e T, acc Option[int]) bool {
+		return i >= from && p(e)
+	}
+	return findIndex[T](this, f)
+}

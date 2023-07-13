@@ -378,7 +378,6 @@ func TestListIndexOfFrom(t *testing.T) {
 	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 5).IndexOfFrom(5, 0))
 	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).IndexOfFrom(3, 0))
 	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfFrom(3, 0))
-
 	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfFrom(3, 2))
 	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5, 6, 3, 9).IndexOfFrom(3, 3))
 	assert.Equal(t, -1, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfFrom(2, 2))
@@ -406,8 +405,57 @@ func TestListIndexOfWhereFrom(t *testing.T) {
 	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 5).IndexOfWhereFrom(p(5), 0))
 	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).IndexOfWhereFrom(p(3), 0))
 	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfWhereFrom(p(3), 0))
-
 	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfWhereFrom(p(3), 2))
 	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5, 6, 3, 9).IndexOfWhereFrom(p(3), 3))
 	assert.Equal(t, -1, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfWhereFrom(p(2), 2))
+}
+
+func TestListLastIndexOf(t *testing.T) {
+	assert.Equal(t, -1, fp.ListOf[int]().LastIndexOf(1))
+	assert.Equal(t, 0, fp.ListOf(1).LastIndexOf(1))
+	assert.Equal(t, -1, fp.ListOf(2, 3, 4).LastIndexOf(1))
+	assert.Equal(t, 0, fp.ListOf(1, 2, 3, 4).LastIndexOf(1))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 5).LastIndexOf(5))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).LastIndexOf(3))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5).LastIndexOf(3))
+}
+
+func TestListLastIndexOfFrom(t *testing.T) {
+	assert.Equal(t, -1, fp.ListOf[int]().LastIndexOfFrom(1, 0))
+	assert.Equal(t, 0, fp.ListOf(1).LastIndexOfFrom(1, 0))
+	assert.Equal(t, -1, fp.ListOf(2, 3, 4).LastIndexOfFrom(1, 0))
+	assert.Equal(t, 0, fp.ListOf(1, 2, 3, 4).LastIndexOfFrom(1, 0))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 5).LastIndexOfFrom(5, 0))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).LastIndexOfFrom(3, 0))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5).LastIndexOfFrom(3, 0))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5).LastIndexOfFrom(3, 2))
+	assert.Equal(t, 7, fp.ListOf(1, 2, 3, 4, 3, 5, 6, 3, 9).LastIndexOfFrom(3, 3))
+	assert.Equal(t, -1, fp.ListOf(1, 2, 3, 4, 3, 5).LastIndexOfFrom(2, 2))
+}
+
+func TestListLastIndexOfWhere(t *testing.T) {
+	p := func(i int) func(int) bool { return func(x int) bool { return i == x } }
+
+	assert.Equal(t, -1, fp.ListOf[int]().LastIndexOfWhere(p(1)))
+	assert.Equal(t, 0, fp.ListOf(1).LastIndexOfWhere(p(1)))
+	assert.Equal(t, -1, fp.ListOf(2, 3, 4).LastIndexOfWhere(p(1)))
+	assert.Equal(t, 0, fp.ListOf(1, 2, 3, 4).LastIndexOfWhere(p(1)))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 5).LastIndexOfWhere(p(5)))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).LastIndexOfWhere(p(3)))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5).LastIndexOfWhere(p(3)))
+}
+
+func TestListLastIndexOfWhereFrom(t *testing.T) {
+	p := func(i int) func(int) bool { return func(x int) bool { return i == x } }
+
+	assert.Equal(t, -1, fp.ListOf[int]().LastIndexOfWhereFrom(p(1), 0))
+	assert.Equal(t, 0, fp.ListOf(1).LastIndexOfWhereFrom(p(1), 0))
+	assert.Equal(t, -1, fp.ListOf(2, 3, 4).LastIndexOfWhereFrom(p(1), 0))
+	assert.Equal(t, 0, fp.ListOf(1, 2, 3, 4).LastIndexOfWhereFrom(p(1), 0))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 5).LastIndexOfWhereFrom(p(5), 0))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).LastIndexOfWhereFrom(p(3), 0))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5).LastIndexOfWhereFrom(p(3), 0))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5).LastIndexOfWhereFrom(p(3), 2))
+	assert.Equal(t, 7, fp.ListOf(1, 2, 3, 4, 3, 5, 6, 3, 9).LastIndexOfWhereFrom(p(3), 3))
+	assert.Equal(t, -1, fp.ListOf(1, 2, 3, 4, 3, 5).LastIndexOfWhereFrom(p(2), 2))
 }
