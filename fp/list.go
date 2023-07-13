@@ -11,14 +11,6 @@ type List[T any] struct {
 	empty bool
 }
 
-func emptyList[T any]() Seq[T] {
-	return List[T]{
-		head:  *new(T),
-		tail:  nil,
-		empty: true,
-	}
-}
-
 func ListOf[T any](elements ...T) Seq[T] {
 	i := len(elements) - 1
 	inc := func(x int) int { return x - 1 }
@@ -282,45 +274,29 @@ func (this List[T]) Indexes() Seq[int] {
 }
 
 func (this List[T]) IndexOf(e T) int {
-	f := func(i int, ei T, acc Option[int]) Option[int] {
-		if acc.NonDefined() && reflect.DeepEqual(e, ei) {
-			return SomeOf(i)
-		}
-		return acc
+	p := func(_ int, ei T, acc Option[int]) bool {
+		return acc.NonDefined() && reflect.DeepEqual(e, ei)
 	}
-
-	return ListFoldCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
+	return findIndex[T](this, p)
 }
 
 func (this List[T]) IndexOfFrom(e T, from int) int {
-	f := func(i int, ei T, acc Option[int]) Option[int] {
-		if i >= from && acc.NonDefined() && reflect.DeepEqual(e, ei) {
-			return SomeOf(i)
-		}
-		return acc
+	p := func(i int, ei T, acc Option[int]) bool {
+		return i >= from && acc.NonDefined() && reflect.DeepEqual(e, ei)
 	}
-
-	return ListFoldCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
+	return findIndex[T](this, p)
 }
 
 func (this List[T]) IndexOfWhere(p func(T) bool) int {
-	f := func(i int, e T, acc Option[int]) Option[int] {
-		if acc.NonDefined() && p(e) {
-			return SomeOf(i)
-		}
-		return acc
+	f := func(i int, e T, acc Option[int]) bool {
+		return acc.NonDefined() && p(e)
 	}
-
-	return ListFoldCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
+	return findIndex[T](this, f)
 }
 
 func (this List[T]) IndexOfWhereFrom(p func(T) bool, from int) int {
-	f := func(i int, e T, acc Option[int]) Option[int] {
-		if i >= from && acc.NonDefined() && p(e) {
-			return SomeOf(i)
-		}
-		return acc
+	f := func(i int, e T, acc Option[int]) bool {
+		return i >= from && acc.NonDefined() && p(e)
 	}
-
-	return ListFoldCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
+	return findIndex[T](this, f)
 }
