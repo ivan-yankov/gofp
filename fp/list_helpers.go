@@ -8,27 +8,6 @@ func emptyList[T any]() Seq[T] {
 	}
 }
 
-func iterate[A, B any](seq Seq[A], f func(A, B) B, acc B) B {
-	if seq.IsEmpty() {
-		return acc
-	}
-
-	return iterate(seq.Tail(), f, f(seq.HeadOption().Get(), acc))
-}
-
-func iterateCount[A, B any](seq Seq[A], f func(int, A, B) B, acc B) B {
-	var it func(seq Seq[A], f func(int, A, B) B, acc B, i int) B
-	it = func(seq Seq[A], f func(int, A, B) B, acc B, i int) B {
-		if seq.IsEmpty() {
-			return acc
-		}
-
-		return it(seq.Tail(), f, f(i, seq.HeadOption().Get(), acc), i+1)
-	}
-
-	return it(seq, f, acc, 0)
-}
-
 func add[T any](e T, acc Seq[T]) Seq[T] {
 	return acc.Add(e)
 }
@@ -69,5 +48,5 @@ func iterateWhile[T any](seq Seq[T], n int, drop bool) Seq[T] {
 		return acc.Add(e)
 	}
 
-	return iterateCount[T, Seq[T]](seq, f, emptyList[T]()).Reverse()
+	return ListFoldCount[T, Seq[T]](seq, f, emptyList[T]()).Reverse()
 }

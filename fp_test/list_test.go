@@ -82,6 +82,30 @@ func TestListZip(t *testing.T) {
 	assert.True(t, fp.ListZip(fp.ListOf("zero", "one", "two", "next", "one more"), fp.ListOf(0, 1, 2)).Equals(exp))
 }
 
+func TestListFoldLeft(t *testing.T) {
+	f := func(i int, acc string) string {
+		return acc + fmt.Sprint(i)
+	}
+	assert.Equal(t, "", fp.ListFoldLeft(fp.ListOf[int](), f, ""))
+	assert.Equal(t, "12345", fp.ListFoldLeft(fp.ListOf(1, 2, 3, 4, 5), f, ""))
+}
+
+func TestListFoldRightLeft(t *testing.T) {
+	f := func(i int, acc string) string {
+		return acc + fmt.Sprint(i)
+	}
+	assert.Equal(t, "", fp.ListFoldRight(fp.ListOf[int](), f, ""))
+	assert.Equal(t, "54321", fp.ListFoldRight(fp.ListOf(1, 2, 3, 4, 5), f, ""))
+}
+
+func TestListFoldCount(t *testing.T) {
+	f := func(i int, x int, acc string) string {
+		return acc + "[" + fmt.Sprint(i) + "," + fmt.Sprint(x) + "]"
+	}
+	assert.Equal(t, "", fp.ListFoldCount(fp.ListOf[int](), f, ""))
+	assert.Equal(t, "[0,1][1,2][2,3][3,4][4,5]", fp.ListFoldCount(fp.ListOf(1, 2, 3, 4, 5), f, ""))
+}
+
 func TestListAdd(t *testing.T) {
 	assert.True(t, fp.ListOf[int]().Add(1).Equals(fp.ListOf(1)))
 	assert.True(t, fp.ListOf(1).Add(2).Equals(fp.ListOf(2, 1)))

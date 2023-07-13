@@ -1,6 +1,9 @@
 package fp
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
 
 type List[T any] struct {
 	head  T
@@ -37,7 +40,7 @@ func ListTabulate[T any](n int, f func(int) T) Seq[T] {
 		return acc.Add(f(i))
 	}
 
-	return iterate[int, Seq[T]](indexes, fAcc, emptyList[T]()).Reverse()
+	return ListFoldLeft[int, Seq[T]](indexes, fAcc, emptyList[T]()).Reverse()
 }
 
 func ListFill[T any](n int, e T) Seq[T] {
@@ -62,6 +65,31 @@ func ListZip[A, B any](sa Seq[A], sb Seq[B]) Seq[Pair[A, B]] {
 // implemented not as an interface method due to generic instantiation cycle error
 func ListZipWithIndex[T any](seq Seq[T]) Seq[Pair[T, int]] {
 	return ListZip[T, int](seq, seq.Indexes())
+}
+
+func ListFoldLeft[A, B any](seq Seq[A], f func(A, B) B, acc B) B {
+	if seq.IsEmpty() {
+		return acc
+	}
+
+	return ListFoldLeft(seq.Tail(), f, f(seq.HeadOption().Get(), acc))
+}
+
+func ListFoldRight[A, B any](seq Seq[A], f func(A, B) B, acc B) B {
+	return ListFoldLeft(seq.Reverse(), f, acc)
+}
+
+func ListFoldCount[A, B any](seq Seq[A], f func(int, A, B) B, acc B) B {
+	var fold func(seq Seq[A], f func(int, A, B) B, acc B, i int) B
+	fold = func(seq Seq[A], f func(int, A, B) B, acc B, i int) B {
+		if seq.IsEmpty() {
+			return acc
+		}
+
+		return fold(seq.Tail(), f, f(i, seq.HeadOption().Get(), acc), i+1)
+	}
+
+	return fold(seq, f, acc, 0)
 }
 
 func (this List[T]) Add(e T) Seq[T] {
@@ -115,7 +143,7 @@ func (this List[T]) Equals(that Seq[T]) bool {
 }
 
 func (this List[T]) Reverse() Seq[T] {
-	return iterate[T, Seq[T]](this, add[T], emptyList[T]())
+	return ListFoldLeft[T, Seq[T]](this, add[T], emptyList[T]())
 }
 
 func (this List[T]) Append(e T) Seq[T] {
@@ -123,22 +151,24 @@ func (this List[T]) Append(e T) Seq[T] {
 }
 
 func (this List[T]) Concat(that Seq[T]) Seq[T] {
-	return iterate(that, add[T], this.Reverse()).Reverse()
+	a := ListFoldRight[T, Seq[T]](that, add[T], this)
+	fmt.Print(a)
+	return ListFoldRight[T, Seq[T]](this, add[T], that)
 }
 
 func (this List[T]) ContainsElement(e T) bool {
 	f := func(ei T, acc bool) bool { return acc || reflect.DeepEqual(e, ei) }
-	return iterate[T, bool](this, f, false)
+	return ListFoldLeft[T, bool](this, f, false)
 }
 
 func (this List[T]) Size() int {
 	f := func(_ T, acc int) int { return acc + 1 }
-	return iterate[T, int](this, f, 0)
+	return ListFoldLeft[T, int](this, f, 0)
 }
 
 func (this List[T]) Exists(p func(T) bool) bool {
 	f := func(e T, acc bool) bool { return acc || p(e) }
-	return iterate[T, bool](this, f, false)
+	return ListFoldLeft[T, bool](this, f, false)
 }
 
 func (this List[T]) Filter(p func(T) bool) Seq[T] {
@@ -149,7 +179,7 @@ func (this List[T]) Filter(p func(T) bool) Seq[T] {
 		return acc
 	}
 
-	return iterate[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+	return ListFoldLeft[T, Seq[T]](this, f, emptyList[T]()).Reverse()
 }
 
 func (this List[T]) FilterNot(p func(T) bool) Seq[T] {
@@ -173,7 +203,7 @@ func (this List[T]) Distinct() Seq[T] {
 		}
 		return acc.Add(e)
 	}
-	return iterate[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+	return ListFoldLeft[T, Seq[T]](this, f, emptyList[T]()).Reverse()
 }
 
 func (this List[T]) Drop(n int) Seq[T] {
@@ -192,7 +222,7 @@ func (this List[T]) DropWhile(p func(e T) bool) Seq[T] {
 		return acc
 	}
 
-	return iterate[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+	return ListFoldLeft[T, Seq[T]](this, f, emptyList[T]()).Reverse()
 }
 
 func (this List[T]) Take(n int) Seq[T] {
@@ -216,23 +246,23 @@ func (this List[T]) TakeWhile(p func(e T) bool) Seq[T] {
 		return Acc{acc.result, false}
 	}
 
-	r := iterate[T, Acc](this, f, Acc{emptyList[T](), true})
+	r := ListFoldLeft[T, Acc](this, f, Acc{emptyList[T](), true})
 	return r.result.Reverse()
 }
 
 func (this List[T]) ForAll(p func(T) bool) bool {
 	f := func(e T, acc bool) bool { return acc && p(e) }
-	return iterate[T, bool](this, f, true)
+	return ListFoldLeft[T, bool](this, f, true)
 }
 
 func (this List[T]) ForEach(f func(T) Unit) Unit {
 	fi := func(e T, acc Unit) Unit { f(e); return GetUnit() }
-	return iterate[T, Unit](this, fi, GetUnit())
+	return ListFoldLeft[T, Unit](this, fi, GetUnit())
 }
 
 func (this List[T]) Indexes() Seq[int] {
 	f := func(i int, _ T, acc Seq[int]) Seq[int] { return acc.Add(i) }
-	return iterateCount[T, Seq[int]](this, f, emptyList[int]()).Reverse()
+	return ListFoldCount[T, Seq[int]](this, f, emptyList[int]()).Reverse()
 }
 
 func (this List[T]) IndexOf(e T) int {
@@ -242,5 +272,5 @@ func (this List[T]) IndexOf(e T) int {
 		}
 		return acc
 	}
-	return iterateCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
+	return ListFoldCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
 }
