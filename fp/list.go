@@ -11,6 +11,14 @@ type List[T any] struct {
 	empty bool
 }
 
+func emptyList[T any]() Seq[T] {
+	return List[T]{
+		head:  *new(T),
+		tail:  nil,
+		empty: true,
+	}
+}
+
 func ListOf[T any](elements ...T) Seq[T] {
 	i := len(elements) - 1
 	inc := func(x int) int { return x - 1 }
@@ -172,14 +180,11 @@ func (this List[T]) Exists(p func(T) bool) bool {
 }
 
 func (this List[T]) Filter(p func(T) bool) Seq[T] {
-	f := func(e T, acc Seq[T]) Seq[T] {
-		if p(e) {
-			return acc.Add(e)
-		}
-		return acc
-	}
-
-	return ListFoldLeft[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+	return collect[T](
+		this,
+		func(_ int, e T, _ Seq[T]) bool { return p(e) },
+		emptyList[T],
+	)
 }
 
 func (this List[T]) FilterNot(p func(T) bool) Seq[T] {
@@ -197,17 +202,23 @@ func (this List[T]) Diff(that Seq[T]) Seq[T] {
 }
 
 func (this List[T]) Distinct() Seq[T] {
-	f := func(e T, acc Seq[T]) Seq[T] {
-		if acc.ContainsElement(e) {
-			return acc
-		}
-		return acc.Add(e)
-	}
-	return ListFoldLeft[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+	return collect[T](
+		this,
+		func(_ int, e T, acc Seq[T]) bool { return !acc.ContainsElement(e) },
+		emptyList[T],
+	)
 }
 
 func (this List[T]) Drop(n int) Seq[T] {
-	return iterateWhile[T](this, n, true)
+	if n <= 0 {
+		return this
+	}
+
+	return collect[T](
+		this,
+		func(i int, _ T, _ Seq[T]) bool { return i >= n },
+		emptyList[T],
+	)
 }
 
 func (this List[T]) DropRight(n int) Seq[T] {
@@ -215,18 +226,23 @@ func (this List[T]) DropRight(n int) Seq[T] {
 }
 
 func (this List[T]) DropWhile(p func(e T) bool) Seq[T] {
-	f := func(e T, acc Seq[T]) Seq[T] {
-		if acc.NonEmpty() || !p(e) {
-			return acc.Add(e)
-		}
-		return acc
-	}
-
-	return ListFoldLeft[T, Seq[T]](this, f, emptyList[T]()).Reverse()
+	return collect[T](
+		this,
+		func(_ int, e T, acc Seq[T]) bool { return acc.NonEmpty() || !p(e) },
+		emptyList[T],
+	)
 }
 
 func (this List[T]) Take(n int) Seq[T] {
-	return iterateWhile[T](this, n, false)
+	if n <= 0 {
+		return emptyList[T]()
+	}
+
+	return collect[T](
+		this,
+		func(i int, _ T, _ Seq[T]) bool { return i < n },
+		emptyList[T],
+	)
 }
 
 func (this List[T]) TakeRight(n int) Seq[T] {

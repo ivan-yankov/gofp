@@ -41,3 +41,36 @@ type Seq[T any] interface {
 	// StartsWith(Seq[T]) bool
 	// EndsWith(Seq[T]) bool
 }
+
+func add[T any](e T, acc Seq[T]) Seq[T] {
+	return acc.Add(e)
+}
+
+func loop[T any](
+	i int,
+	inc func(int) int,
+	p func(int) bool,
+	f func(int, T) T,
+	acc T) T {
+
+	if p(i) {
+		return acc
+	}
+
+	return loop(inc(i), inc, p, f, f(i, acc))
+}
+
+func collect[T any](
+	seq Seq[T],
+	appendCondition func(int, T, Seq[T]) bool,
+	emptySeq func() Seq[T]) Seq[T] {
+
+	f := func(i int, e T, acc Seq[T]) Seq[T] {
+		if appendCondition(i, e, acc) {
+			return acc.Add(e)
+		}
+		return acc
+	}
+
+	return ListFoldCount[T, Seq[T]](seq, f, emptySeq()).Reverse()
+}
