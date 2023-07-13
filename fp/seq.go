@@ -29,7 +29,7 @@ type Seq[T any] interface {
 	ForEach(func(T) Unit) Unit
 	Indexes() Seq[int]
 	IndexOf(T) int
-	// IndexOfFrom(T, int) int
+	IndexOfFrom(T, int) int
 	// IndexOfWhere(func(T) bool) int
 	// IndexOfWhereFrom(func(T) bool, int) int
 	// LastIndexOf(T) int

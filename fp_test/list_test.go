@@ -369,3 +369,17 @@ func TestListIndexOf(t *testing.T) {
 	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).IndexOf(3))
 	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOf(3))
 }
+
+func TestListIndexOfFrom(t *testing.T) {
+	assert.Equal(t, -1, fp.ListOf[int]().IndexOfFrom(1, 0))
+	assert.Equal(t, 0, fp.ListOf(1).IndexOfFrom(1, 0))
+	assert.Equal(t, -1, fp.ListOf(2, 3, 4).IndexOfFrom(1, 0))
+	assert.Equal(t, 0, fp.ListOf(1, 2, 3, 4).IndexOfFrom(1, 0))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 5).IndexOfFrom(5, 0))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).IndexOfFrom(3, 0))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfFrom(3, 0))
+
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfFrom(3, 2))
+	assert.Equal(t, 4, fp.ListOf(1, 2, 3, 4, 3, 5, 6, 3, 9).IndexOfFrom(3, 3))
+	assert.Equal(t, -1, fp.ListOf(1, 2, 3, 4, 3, 5).IndexOfFrom(2, 2))
+}

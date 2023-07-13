@@ -283,10 +283,22 @@ func (this List[T]) Indexes() Seq[int] {
 
 func (this List[T]) IndexOf(e T) int {
 	f := func(i int, ei T, acc Option[int]) Option[int] {
-		if reflect.DeepEqual(e, ei) && acc.NonDefined() {
+		if acc.NonDefined() && reflect.DeepEqual(e, ei) {
 			return SomeOf(i)
 		}
 		return acc
 	}
+
+	return ListFoldCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
+}
+
+func (this List[T]) IndexOfFrom(e T, from int) int {
+	f := func(i int, ei T, acc Option[int]) Option[int] {
+		if i >= from && acc.NonDefined() && reflect.DeepEqual(e, ei) {
+			return SomeOf(i)
+		}
+		return acc
+	}
+
 	return ListFoldCount[T, Option[int]](this, f, None[int]()).GetOrElse(-1)
 }
