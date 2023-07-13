@@ -36,7 +36,7 @@ type Seq[T any] interface {
 	LastIndexOfFrom(T, int) int
 	LastIndexOfWhere(func(T) bool) int
 	LastIndexOfWhereFrom(func(T) bool, int) int
-	// IsValidIndex(int) bool
+	IsValidIndex(int) bool
 	// ContainsSlice(Seq[T]) bool
 	// StartsWith(Seq[T]) bool
 	// EndsWith(Seq[T]) bool

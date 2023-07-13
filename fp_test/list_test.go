@@ -459,3 +459,15 @@ func TestListLastIndexOfWhereFrom(t *testing.T) {
 	assert.Equal(t, 7, fp.ListOf(1, 2, 3, 4, 3, 5, 6, 3, 9).LastIndexOfWhereFrom(p(3), 3))
 	assert.Equal(t, -1, fp.ListOf(1, 2, 3, 4, 3, 5).LastIndexOfWhereFrom(p(2), 2))
 }
+
+func TestListIsValidIndex(t *testing.T) {
+	assert.False(t, fp.ListOf[int]().IsValidIndex(-1))
+	assert.False(t, fp.ListOf[int]().IsValidIndex(0))
+	assert.False(t, fp.ListOf[int]().IsValidIndex(1))
+	assert.False(t, fp.ListOf(1, 2, 3).IsValidIndex(-1))
+	assert.False(t, fp.ListOf(1, 2, 3).IsValidIndex(3))
+	assert.False(t, fp.ListOf(1, 2, 3).IsValidIndex(4))
+	assert.True(t, fp.ListOf(1, 2, 3).IsValidIndex(0))
+	assert.True(t, fp.ListOf(1, 2, 3).IsValidIndex(1))
+	assert.True(t, fp.ListOf(1, 2, 3).IsValidIndex(2))
+}

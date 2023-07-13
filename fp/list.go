@@ -328,3 +328,7 @@ func (this List[T]) LastIndexOfWhereFrom(p func(T) bool, from int) int {
 	}
 	return findIndex[T](this, f)
 }
+
+func (this List[T]) IsValidIndex(i int) bool {
+	return i >= 0 && i < this.Size()
+}
