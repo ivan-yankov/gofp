@@ -55,14 +55,7 @@ func ListFoldCount[A, B any](seq Seq[A], f func(int, A, B) B, acc B) B {
 }
 
 func ListStartsWith[T any](a Seq[T], b Seq[T]) bool {
-	if a.IsEmpty() || b.IsEmpty() || a.Size() < b.Size() {
-		return false
-	}
-
-	return ListZip[T, T](a, b).
-		ForAll(func(x Pair[T, T]) bool {
-			return reflect.DeepEqual(x.GetA(), x.GetB())
-		})
+	return 0 == ListContainsSlice(a, b).GetOrElse(-1)
 }
 
 func ListEndsWith[T any](a Seq[T], b Seq[T]) bool {
