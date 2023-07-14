@@ -72,7 +72,11 @@ func ListContainsSlice[T any](a Seq[T], b Seq[T]) Option[int] {
 		if acc.IsDefined() || s.IsEmpty() {
 			return acc
 		}
-		if ListZip(s, b).ForAll(func(x Pair[T, T]) bool { return reflect.DeepEqual(x.GetA(), x.GetB()) }) {
+		zip := ListZip(s, b)
+		match := zip.ForAll(func(x Pair[T, T]) bool {
+			return reflect.DeepEqual(x.GetA(), x.GetB())
+		})
+		if match {
 			return it(s.Tail(), i+1, SomeOf(i))
 		}
 		return it(s.Tail(), i+1, None[int]())
