@@ -71,3 +71,14 @@ func TestListEndsWith(t *testing.T) {
 	assert.False(t, fp.ListEndsWith(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(1, 2, 3, 4, 5, 6)))
 	assert.False(t, fp.ListEndsWith(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(6, 1, 2, 3, 4, 5)))
 }
+
+func TestListContainsSlice(t *testing.T) {
+	assert.True(t, fp.ListContainsSlice(fp.ListOf[int](), fp.ListOf[int]()).NonDefined())
+	assert.True(t, fp.ListContainsSlice(fp.ListOf(1), fp.ListOf[int]()).NonDefined())
+	assert.True(t, fp.ListContainsSlice(fp.ListOf[int](), fp.ListOf(1)).NonDefined())
+	assert.True(t, fp.ListContainsSlice(fp.ListOf(1, 2, 3), fp.ListOf(1, 2, 3, 4, 5)).NonDefined())
+
+	assert.Equal(t, 0, fp.ListContainsSlice(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(1, 2, 3, 4, 5)).GetOrElse(-1))
+	assert.Equal(t, 3, fp.ListContainsSlice(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(4, 5)).GetOrElse(-1))
+	assert.Equal(t, 2, fp.ListContainsSlice(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(3, 4, 5)).GetOrElse(-1))
+}

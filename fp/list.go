@@ -68,3 +68,22 @@ func ListStartsWith[T any](a Seq[T], b Seq[T]) bool {
 func ListEndsWith[T any](a Seq[T], b Seq[T]) bool {
 	return ListStartsWith(a.Reverse(), b.Reverse())
 }
+
+func ListContainsSlice[T any](a Seq[T], b Seq[T]) Option[int] {
+	if a.IsEmpty() || b.IsEmpty() || (a.Size() < b.Size()) {
+		return None[int]()
+	}
+
+	var it func(Seq[T], int, Option[int]) Option[int]
+	it = func(s Seq[T], i int, acc Option[int]) Option[int] {
+		if acc.IsDefined() || s.IsEmpty() {
+			return acc
+		}
+		if ListZip(s, b).ForAll(func(x Pair[T, T]) bool { return reflect.DeepEqual(x.GetA(), x.GetB()) }) {
+			return it(s.Tail(), i+1, SomeOf(i))
+		}
+		return it(s.Tail(), i+1, None[int]())
+	}
+
+	return it(a, 0, None[int]())
+}

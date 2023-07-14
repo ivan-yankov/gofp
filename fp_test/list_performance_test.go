@@ -13,5 +13,16 @@ func run(b *testing.B, f func()) {
 }
 
 func BenchmarkListSize(b *testing.B) {
-	run(b, func() { fp.ListFill(1000000, 1) })
+	list := fp.ListFill(1000000, 1)
+	b.ResetTimer()
+	run(b, func() { list.Size() })
+}
+
+func BenchmarkListContainsSlice(b *testing.B) {
+	na := 100000
+	nb := 50
+	la := fp.ListTabulate(na, func(i int) int { return i + 1 })
+	lb := fp.ListTabulate(nb, func(i int) int { return i + na - nb - 10 })
+	b.ResetTimer()
+	run(b, func() { fp.ListContainsSlice(la, lb) })
 }
