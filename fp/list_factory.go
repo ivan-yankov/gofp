@@ -1,5 +1,19 @@
 package fp
 
+func loop[T any](
+	i int,
+	inc func(int) int,
+	p func(int) bool,
+	f func(int, T) T,
+	acc T) T {
+
+	if p(i) {
+		return acc
+	}
+
+	return loop(inc(i), inc, p, f, f(i, acc))
+}
+
 func ListOf[T any](elements ...T) Seq[T] {
 	i := len(elements) - 1
 	inc := func(x int) int { return x - 1 }

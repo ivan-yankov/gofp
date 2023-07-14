@@ -16,7 +16,6 @@ func ListZip[A, B any](a Seq[A], b Seq[B]) Seq[Pair[A, B]] {
 		if s1.IsEmpty() || s2.IsEmpty() {
 			return acc
 		}
-
 		return it(s1.Tail(), s2.Tail(), acc.Add(PairOf(s1.HeadOption().Get(), s2.HeadOption().Get())))
 	}
 
@@ -47,7 +46,6 @@ func ListFoldCount[A, B any](seq Seq[A], f func(int, A, B) B, acc B) B {
 		if seq.IsEmpty() {
 			return acc
 		}
-
 		return fold(seq.Tail(), f, f(i, seq.HeadOption().Get(), acc), i+1)
 	}
 
