@@ -348,6 +348,15 @@ func (this List[T]) PrefixLength(p func(T) bool) int {
 	return r.n
 }
 
+func (this List[T]) Reduce(f func(T, T) T) Option[T] {
+	if this.IsEmpty() {
+		return None[T]()
+	}
+
+	r := ListFoldLeft[T, T](this.Tail(), f, this.HeadOption().Get())
+	return SomeOf(r)
+}
+
 func (this List[T]) ToList() List[T] {
 	return this
 }

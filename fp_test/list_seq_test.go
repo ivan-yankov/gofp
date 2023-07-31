@@ -452,6 +452,18 @@ func TestListPrefixLength(t *testing.T) {
 	assert.Equal(t, 3, fp.ListOf(1, 2, 3, -1, 4, 5).PrefixLength(p))
 }
 
+func TestListReduce(t *testing.T) {
+	sum := func(x int, y int) int { return x + y }
+	assert.True(t, fp.ListOf[int]().Reduce(sum).NonDefined())
+	assert.Equal(t, 1, fp.ListOf(1).Reduce(sum).Get())
+	assert.Equal(t, 15, fp.ListOf(1, 2, 3, 4, 5).Reduce(sum).Get())
+
+	product := func(x int, y int) int { return x * y }
+	assert.True(t, fp.ListOf[int]().Reduce(product).NonDefined())
+	assert.Equal(t, 1, fp.ListOf(1).Reduce(product).Get())
+	assert.Equal(t, 120, fp.ListOf(1, 2, 3, 4, 5).Reduce(product).Get())
+}
+
 func TestListToList(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3).ToList().Equals(fp.ListOf(1, 2, 3)))
 }

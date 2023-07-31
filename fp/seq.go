@@ -44,6 +44,7 @@ type Seq[T any] interface {
 	Max(func(T, T) bool) Option[T]
 	MkString(string) string
 	PrefixLength(func(T) bool) int
+	Reduce(func(T, T) T) Option[T]
 	ToList() List[T]
 }
 
