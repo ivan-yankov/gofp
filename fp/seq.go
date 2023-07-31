@@ -37,6 +37,10 @@ type Seq[T any] interface {
 	LastIndexOfWhere(func(T) bool) int
 	LastIndexOfWhereFrom(func(T) bool, int) int
 	IsValidIndex(int) bool
+	StartsWith(Seq[T]) bool
+	EndsWith(Seq[T]) bool
+	ContainsSlice(Seq[T]) Option[int]
+	ToList() List[T]
 }
 
 func add[T any](e T, acc Seq[T]) Seq[T] {
