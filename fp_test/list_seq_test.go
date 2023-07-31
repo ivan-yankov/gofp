@@ -444,6 +444,14 @@ func TestListMkString(t *testing.T) {
 	assert.Equal(t, "{name:P1 age:24};{name:P2 age:28};{name:P3 age:34}", persons.MkString(";"))
 }
 
+func TestListPrefixLength(t *testing.T) {
+	p := func(x int) bool { return x > 0 }
+	assert.Equal(t, 0, fp.ListOf[int]().PrefixLength(p))
+	assert.Equal(t, 0, fp.ListOf[int]().PrefixLength(p))
+	assert.Equal(t, 0, fp.ListOf(0, 1, 2, 3).PrefixLength(p))
+	assert.Equal(t, 3, fp.ListOf(1, 2, 3, -1, 4, 5).PrefixLength(p))
+}
+
 func TestListToList(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3).ToList().Equals(fp.ListOf(1, 2, 3)))
 }

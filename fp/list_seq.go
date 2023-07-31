@@ -321,16 +321,31 @@ func (this List[T]) Max(comp func(T, T) bool) Option[T] {
 func (this List[T]) MkString(sep string) string {
 	strings := ListMap[T, string](this, func(x T) string { return fmt.Sprintf("%+v", x) })
 	lastIndex := this.Size() - 1
-	return ListFoldCount[string, string](
-		strings,
-		func(i int, x string, acc string) string {
-			if i == lastIndex {
-				return acc + x
-			}
-			return acc + x + sep
-		},
-		"",
-	)
+	f := func(i int, e string, acc string) string {
+		if i == lastIndex {
+			return acc + e
+		}
+		return acc + e + sep
+	}
+
+	return ListFoldCount[string, string](strings, f, "")
+}
+
+func (this List[T]) PrefixLength(p func(T) bool) int {
+	type Acc struct {
+		n     int
+		check bool
+	}
+
+	f := func(e T, acc Acc) Acc {
+		if acc.check && p(e) {
+			return Acc{acc.n + 1, true}
+		}
+		return Acc{acc.n, false}
+	}
+
+	r := ListFoldLeft[T, Acc](this, f, Acc{0, true})
+	return r.n
 }
 
 func (this List[T]) ToList() List[T] {
