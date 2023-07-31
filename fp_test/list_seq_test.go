@@ -410,6 +410,20 @@ func TestListContainsSlice(t *testing.T) {
 	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).ContainsSlice(fp.ListOf(3, 4, 5)).GetOrElse(-1))
 }
 
+func TestListMin(t *testing.T) {
+	f := func(x int, y int) bool { return x > y }
+	assert.True(t, fp.ListOf[int]().Min(f).NonDefined())
+	assert.Equal(t, 1, fp.ListOf(1).Min(f).Get())
+	assert.Equal(t, 1, fp.ListOf(1, 2, 3, 4, 5).Min(f).Get())
+}
+
+func TestListMax(t *testing.T) {
+	f := func(x int, y int) bool { return x > y }
+	assert.True(t, fp.ListOf[int]().Max(f).NonDefined())
+	assert.Equal(t, 1, fp.ListOf(1).Max(f).Get())
+	assert.Equal(t, 5, fp.ListOf(1, 2, 3, 4, 5).Max(f).Get())
+}
+
 func TestListToList(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3).ToList().Equals(fp.ListOf(1, 2, 3)))
 }

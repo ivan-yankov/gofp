@@ -40,6 +40,8 @@ type Seq[T any] interface {
 	StartsWith(Seq[T]) bool
 	EndsWith(Seq[T]) bool
 	ContainsSlice(Seq[T]) Option[int]
+	Min(func(T, T) bool) Option[T]
+	Max(func(T, T) bool) Option[T]
 	ToList() List[T]
 }
 

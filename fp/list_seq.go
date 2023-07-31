@@ -285,6 +285,38 @@ func (this List[T]) ContainsSlice(that Seq[T]) Option[int] {
 	return it(this, 0, None[int]())
 }
 
+func (this List[T]) Min(comp func(T, T) bool) Option[T] {
+	if this.IsEmpty() {
+		return None[T]()
+	}
+
+	f := func(x T, y T) T {
+		if comp(x, y) {
+			return y
+		}
+		return x
+	}
+
+	r := ListFoldLeft[T, T](this, f, this.head)
+	return SomeOf(r)
+}
+
+func (this List[T]) Max(comp func(T, T) bool) Option[T] {
+	if this.IsEmpty() {
+		return None[T]()
+	}
+
+	f := func(x T, y T) T {
+		if comp(x, y) {
+			return x
+		}
+		return y
+	}
+
+	r := ListFoldLeft[T, T](this, f, this.head)
+	return SomeOf(r)
+}
+
 func (this List[T]) ToList() List[T] {
 	return this
 }
