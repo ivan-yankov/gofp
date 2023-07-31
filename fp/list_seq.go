@@ -1,7 +1,6 @@
 package fp
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -64,8 +63,6 @@ func (this List[T]) Append(e T) Seq[T] {
 }
 
 func (this List[T]) Concat(that Seq[T]) Seq[T] {
-	a := ListFoldRight[T, Seq[T]](that, add[T], this)
-	fmt.Print(a)
 	return ListFoldRight[T, Seq[T]](this, add[T], that)
 }
 

@@ -47,3 +47,33 @@ func TestListFoldCount(t *testing.T) {
 	assert.Equal(t, "", fp.ListFoldCount(fp.ListOf[int](), f, ""))
 	assert.Equal(t, "[0,1][1,2][2,3][3,4][4,5]", fp.ListFoldCount(fp.ListOf(1, 2, 3, 4, 5), f, ""))
 }
+
+func TestListMap(t *testing.T) {
+	f := func(x int) string {
+		return "r" + fmt.Sprint(x)
+	}
+
+	assert.True(t, fp.ListMap(fp.ListOf[int](), f).IsEmpty())
+	assert.True(t, fp.ListMap(fp.ListOf(1), f).Equals(fp.ListOf("r1")))
+	assert.True(t, fp.ListMap(fp.ListOf(1, 2, 3), f).Equals(fp.ListOf("r1", "r2", "r3")))
+}
+
+func TestListReverseMap(t *testing.T) {
+	f := func(x int) string {
+		return "r" + fmt.Sprint(x)
+	}
+
+	assert.True(t, fp.ListReverseMap(fp.ListOf[int](), f).IsEmpty())
+	assert.True(t, fp.ListReverseMap(fp.ListOf(1), f).Equals(fp.ListOf("r1")))
+	assert.True(t, fp.ListReverseMap(fp.ListOf(1, 2, 3), f).Equals(fp.ListOf("r3", "r2", "r1")))
+}
+
+func TestListFlatMap(t *testing.T) {
+	f := func(x int) fp.Seq[string] {
+		return fp.ListOf("result", "r"+fmt.Sprint(x))
+	}
+
+	assert.True(t, fp.ListFlatMap(fp.ListOf[int](), f).IsEmpty())
+	assert.True(t, fp.ListFlatMap(fp.ListOf(1), f).Equals(fp.ListOf("result", "r1")))
+	assert.True(t, fp.ListFlatMap(fp.ListOf(1, 2, 3), f).Equals(fp.ListOf("result", "r1", "result", "r2", "result", "r3")))
+}

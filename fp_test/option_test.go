@@ -33,7 +33,7 @@ func TestMapOption_Some(t *testing.T) {
 	assert.Equal(
 		t,
 		fp.SomeOf("1"),
-		fp.MapOption(fp.SomeOf[int](1), func(x int) string { return fmt.Sprint(x) }),
+		fp.OptionMap(fp.SomeOf[int](1), func(x int) string { return fmt.Sprint(x) }),
 	)
 }
 
@@ -41,7 +41,7 @@ func TestMapOption_None(t *testing.T) {
 	assert.Equal(
 		t,
 		fp.None[string](),
-		fp.MapOption(fp.None[int](), func(x int) string { return fmt.Sprint(x) }),
+		fp.OptionMap(fp.None[int](), func(x int) string { return fmt.Sprint(x) }),
 	)
 }
 
@@ -49,7 +49,7 @@ func TestFlatMapOption_SomeToSome(t *testing.T) {
 	assert.Equal(
 		t,
 		fp.SomeOf("1"),
-		fp.FlatMapOption(fp.SomeOf[int](1), func(x int) fp.Option[string] { return fp.SomeOf(fmt.Sprint(x)) }),
+		fp.OptionFlatMap(fp.SomeOf[int](1), func(x int) fp.Option[string] { return fp.SomeOf(fmt.Sprint(x)) }),
 	)
 }
 
@@ -57,7 +57,7 @@ func TestFlatMapOption_SomeToNone(t *testing.T) {
 	assert.Equal(
 		t,
 		fp.None[string](),
-		fp.FlatMapOption(fp.SomeOf[int](1), func(int) fp.Option[string] { return fp.None[string]() }),
+		fp.OptionFlatMap(fp.SomeOf[int](1), func(int) fp.Option[string] { return fp.None[string]() }),
 	)
 }
 
@@ -65,6 +65,6 @@ func TestFlatMapOption_NoneToNone(t *testing.T) {
 	assert.Equal(
 		t,
 		fp.None[string](),
-		fp.FlatMapOption(fp.None[int](), func(x int) fp.Option[string] { return fp.SomeOf(fmt.Sprint(x)) }),
+		fp.OptionFlatMap(fp.None[int](), func(x int) fp.Option[string] { return fp.SomeOf(fmt.Sprint(x)) }),
 	)
 }

@@ -28,7 +28,7 @@ func RightOf[L, R any](value R) Either[L, R] {
 	}
 }
 
-func MapEither[L, A, B any](x Either[L, A], f func(A) B) Either[L, B] {
+func EitherMap[L, A, B any](x Either[L, A], f func(A) B) Either[L, B] {
 	if x.IsRight() {
 		return RightOf[L, B](f(x.GetRight().Get()))
 	}
@@ -36,7 +36,7 @@ func MapEither[L, A, B any](x Either[L, A], f func(A) B) Either[L, B] {
 	return LeftOf[L, B](x.GetLeft().Get())
 }
 
-func FlatMapEither[L, A, B any](x Either[L, A], f func(A) Either[L, B]) Either[L, B] {
+func EitherFlatMap[L, A, B any](x Either[L, A], f func(A) Either[L, B]) Either[L, B] {
 	if x.IsRight() {
 		return f(x.GetRight().Get())
 	}

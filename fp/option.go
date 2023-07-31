@@ -26,19 +26,17 @@ func None[T any]() Option[T] {
 	}
 }
 
-func MapOption[A, B any](x Option[A], f func(A) B) Option[B] {
+func OptionMap[A, B any](x Option[A], f func(A) B) Option[B] {
 	if x.IsDefined() {
 		return SomeOf(f(x.Get()))
 	}
-
 	return None[B]()
 }
 
-func FlatMapOption[A, B any](x Option[A], f func(A) Option[B]) Option[B] {
+func OptionFlatMap[A, B any](x Option[A], f func(A) Option[B]) Option[B] {
 	if x.IsDefined() {
 		return f(x.Get())
 	}
-
 	return None[B]()
 }
 
@@ -54,7 +52,6 @@ func (this option[T]) Get() T {
 	if this.defined {
 		return this.value
 	}
-
 	panic("Unable to get value from None")
 }
 
@@ -62,6 +59,5 @@ func (this option[T]) GetOrElse(y T) T {
 	if this.defined {
 		return this.Get()
 	}
-
 	return y
 }

@@ -62,3 +62,14 @@ func ListReverseMap[A, B any](seq Seq[A], f func(A) B) Seq[B] {
 	}
 	return it(seq, emptyList[B]())
 }
+
+func ListFlatMap[A, B any](seq Seq[A], f func(A) Seq[B]) Seq[B] {
+	var it func(Seq[A], Seq[B]) Seq[B]
+	it = func(s Seq[A], acc Seq[B]) Seq[B] {
+		if s.IsEmpty() {
+			return acc
+		}
+		return it(s.Tail(), acc.Concat(f(s.HeadOption().Get())))
+	}
+	return it(seq, emptyList[B]())
+}

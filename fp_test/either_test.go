@@ -64,7 +64,7 @@ func TestSwap_RightToLeft(t *testing.T) {
 }
 
 func TestMapEither_Right(t *testing.T) {
-	e := fp.MapEither[bool, int, string](
+	e := fp.EitherMap[bool, int, string](
 		fp.RightOf[bool, int](1),
 		func(x int) string { return fmt.Sprint(x * 2) },
 	)
@@ -73,7 +73,7 @@ func TestMapEither_Right(t *testing.T) {
 }
 
 func TestMapEither_Left(t *testing.T) {
-	e := fp.MapEither[bool, int, string](
+	e := fp.EitherMap[bool, int, string](
 		fp.LeftOf[bool, int](true),
 		func(x int) string { return fmt.Sprint(x * 2) },
 	)
@@ -82,7 +82,7 @@ func TestMapEither_Left(t *testing.T) {
 }
 
 func TestFlatMapEither_Right(t *testing.T) {
-	e := fp.FlatMapEither[bool, int, string](
+	e := fp.EitherFlatMap[bool, int, string](
 		fp.RightOf[bool, int](1),
 		func(x int) fp.Either[bool, string] { return fp.RightOf[bool, string](fmt.Sprint(x * 2)) },
 	)
@@ -91,7 +91,7 @@ func TestFlatMapEither_Right(t *testing.T) {
 }
 
 func TestFlatMapEither_Left(t *testing.T) {
-	e := fp.FlatMapEither[bool, int, string](
+	e := fp.EitherFlatMap[bool, int, string](
 		fp.LeftOf[bool, int](true),
 		func(x int) fp.Either[bool, string] { return fp.RightOf[bool, string](fmt.Sprint(x * 2)) },
 	)
