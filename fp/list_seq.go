@@ -259,7 +259,7 @@ func (this List[T]) ContainsSlice(that Seq[T]) Option[int] {
 		return None[int]()
 	}
 
-	var eq func(sa Seq[T], sb Seq[T], acc bool) bool
+	var eq func(Seq[T], Seq[T], bool) bool
 	eq = func(sa Seq[T], sb Seq[T], acc bool) bool {
 		if sa.IsEmpty() || sb.IsEmpty() {
 			return acc

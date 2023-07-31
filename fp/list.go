@@ -47,3 +47,18 @@ func ListFoldCount[A, B any](seq Seq[A], f func(int, A, B) B, acc B) B {
 
 	return fold(seq, f, acc, 0)
 }
+
+func ListMap[A, B any](seq Seq[A], f func(A) B) Seq[B] {
+	return ListReverseMap(seq, f).Reverse()
+}
+
+func ListReverseMap[A, B any](seq Seq[A], f func(A) B) Seq[B] {
+	var it func(Seq[A], Seq[B]) Seq[B]
+	it = func(s Seq[A], acc Seq[B]) Seq[B] {
+		if s.IsEmpty() {
+			return acc
+		}
+		return it(s.Tail(), acc.Add(f(s.HeadOption().Get())))
+	}
+	return it(seq, emptyList[B]())
+}

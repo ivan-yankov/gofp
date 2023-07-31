@@ -411,5 +411,25 @@ func TestListContainsSlice(t *testing.T) {
 }
 
 func TestListToList(t *testing.T) {
-	assert.True(t, fp.ListOf[int](1, 2, 3).ToList().Equals(fp.ListOf(1, 2, 3)))
+	assert.True(t, fp.ListOf(1, 2, 3).ToList().Equals(fp.ListOf(1, 2, 3)))
+}
+
+func TestListMap(t *testing.T) {
+	f := func(x int) string {
+		return "r" + fmt.Sprint(x)
+	}
+
+	assert.True(t, fp.ListMap(fp.ListOf[int](), f).IsEmpty())
+	assert.True(t, fp.ListMap(fp.ListOf(1), f).Equals(fp.ListOf("r1")))
+	assert.True(t, fp.ListMap(fp.ListOf(1, 2, 3), f).Equals(fp.ListOf("r1", "r2", "r3")))
+}
+
+func TestListReverseMap(t *testing.T) {
+	f := func(x int) string {
+		return "r" + fmt.Sprint(x)
+	}
+
+	assert.True(t, fp.ListReverseMap(fp.ListOf[int](), f).IsEmpty())
+	assert.True(t, fp.ListReverseMap(fp.ListOf(1), f).Equals(fp.ListOf("r1")))
+	assert.True(t, fp.ListReverseMap(fp.ListOf(1, 2, 3), f).Equals(fp.ListOf("r3", "r2", "r1")))
 }
