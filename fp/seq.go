@@ -42,6 +42,7 @@ type Seq[T any] interface {
 	ContainsSlice(Seq[T]) Option[int]
 	Min(func(T, T) bool) Option[T]
 	Max(func(T, T) bool) Option[T]
+	MkString(string) string
 	ToList() List[T]
 }
 

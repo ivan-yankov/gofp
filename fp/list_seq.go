@@ -1,6 +1,7 @@
 package fp
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -315,6 +316,21 @@ func (this List[T]) Max(comp func(T, T) bool) Option[T] {
 
 	r := ListFoldLeft[T, T](this, f, this.head)
 	return SomeOf(r)
+}
+
+func (this List[T]) MkString(sep string) string {
+	strings := ListMap[T, string](this, func(x T) string { return fmt.Sprintf("%+v", x) })
+	lastIndex := this.Size() - 1
+	return ListFoldCount[string, string](
+		strings,
+		func(i int, x string, acc string) string {
+			if i == lastIndex {
+				return acc + x
+			}
+			return acc + x + sep
+		},
+		"",
+	)
 }
 
 func (this List[T]) ToList() List[T] {

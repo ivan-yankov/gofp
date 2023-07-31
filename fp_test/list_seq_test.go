@@ -424,6 +424,26 @@ func TestListMax(t *testing.T) {
 	assert.Equal(t, 5, fp.ListOf(1, 2, 3, 4, 5).Max(f).Get())
 }
 
+func TestListMkString(t *testing.T) {
+	assert.Equal(t, "", fp.ListOf[int]().MkString(""))
+	assert.Equal(t, "", fp.ListOf[int]().MkString("-"))
+	assert.Equal(t, "12345", fp.ListOf(1, 2, 3, 4, 5).MkString(""))
+	assert.Equal(t, "1-2-3-4-5", fp.ListOf(1, 2, 3, 4, 5).MkString("-"))
+
+	type person struct {
+		name string
+		age  int
+	}
+
+	persons := fp.ListOf(
+		person{"P1", 24},
+		person{"P2", 28},
+		person{"P3", 34},
+	)
+
+	assert.Equal(t, "{name:P1 age:24};{name:P2 age:28};{name:P3 age:34}", persons.MkString(";"))
+}
+
 func TestListToList(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3).ToList().Equals(fp.ListOf(1, 2, 3)))
 }
