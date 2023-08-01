@@ -7,29 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListOf_Empty(t *testing.T) {
-	lst := fp.ListOf[int]()
-	assert.True(t, lst.HeadOption().NonDefined())
-	assert.True(t, lst.Tail().IsEmpty())
-	assert.True(t, lst.IsEmpty())
-}
-
-func TestListOf_One(t *testing.T) {
-	lst := fp.ListOf(1)
-	assert.Equal(t, 1, lst.HeadOption().GetOrElse(0))
-	assert.True(t, lst.Tail().IsEmpty())
-	assert.False(t, lst.IsEmpty())
-}
-
-func TestListOf_NonEmpty(t *testing.T) {
-	lst := fp.ListOf(1, 2, 3)
-	assert.Equal(t, 1, lst.HeadOption().GetOrElse(0))
-	assert.Equal(t, 2, lst.Tail().HeadOption().GetOrElse(0))
-	assert.Equal(t, 3, lst.Tail().Tail().HeadOption().GetOrElse(0))
-	assert.True(t, lst.Tail().Tail().Tail().IsEmpty())
-	assert.False(t, lst.IsEmpty())
-}
-
 func TestListOfGoSlice_Empty(t *testing.T) {
 	lst := fp.ListOfGoSlice[int]([]int{})
 	assert.True(t, lst.HeadOption().NonDefined())
@@ -46,6 +23,29 @@ func TestListOfGoSlice_One(t *testing.T) {
 
 func TestListOfGoSlice_NonEmpty(t *testing.T) {
 	lst := fp.ListOfGoSlice([]int{1, 2, 3})
+	assert.Equal(t, 1, lst.HeadOption().GetOrElse(0))
+	assert.Equal(t, 2, lst.Tail().HeadOption().GetOrElse(0))
+	assert.Equal(t, 3, lst.Tail().Tail().HeadOption().GetOrElse(0))
+	assert.True(t, lst.Tail().Tail().Tail().IsEmpty())
+	assert.False(t, lst.IsEmpty())
+}
+
+func TestListOf_Empty(t *testing.T) {
+	lst := fp.ListOf[int]()
+	assert.True(t, lst.HeadOption().NonDefined())
+	assert.True(t, lst.Tail().IsEmpty())
+	assert.True(t, lst.IsEmpty())
+}
+
+func TestListOf_One(t *testing.T) {
+	lst := fp.ListOf(1)
+	assert.Equal(t, 1, lst.HeadOption().GetOrElse(0))
+	assert.True(t, lst.Tail().IsEmpty())
+	assert.False(t, lst.IsEmpty())
+}
+
+func TestListOf_NonEmpty(t *testing.T) {
+	lst := fp.ListOf(1, 2, 3)
 	assert.Equal(t, 1, lst.HeadOption().GetOrElse(0))
 	assert.Equal(t, 2, lst.Tail().HeadOption().GetOrElse(0))
 	assert.Equal(t, 3, lst.Tail().Tail().HeadOption().GetOrElse(0))

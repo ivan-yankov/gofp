@@ -442,6 +442,14 @@ func TestListSlice(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Slice(2, 9).Equals(fp.ListOf(3, 4, 5)))
 }
 
+func TestListSplitAt(t *testing.T) {
+	assert.Equal(t, fp.PairOf(fp.ListOf[int](), fp.ListOf[int]()), fp.ListOf[int]().SplitAt(0))
+	assert.Equal(t, fp.PairOf(fp.ListOf(1, 2, 3), fp.ListOf[int]()), fp.ListOf(1, 2, 3).SplitAt(-1))
+	assert.Equal(t, fp.PairOf(fp.ListOf[int](), fp.ListOf(1, 2, 3, 4, 5)), fp.ListOf(1, 2, 3, 4, 5).SplitAt(0))
+	assert.Equal(t, fp.PairOf(fp.ListOf[int](1, 2), fp.ListOf(3, 4, 5)), fp.ListOf(1, 2, 3, 4, 5).SplitAt(2))
+	assert.Equal(t, fp.PairOf(fp.ListOf(1, 2, 3, 4), fp.ListOf[int](5)), fp.ListOf(1, 2, 3, 4, 5).SplitAt(4))
+}
+
 func TestListToList(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3).ToList().Equals(fp.ListOf(1, 2, 3)))
 }

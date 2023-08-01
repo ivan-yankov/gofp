@@ -43,6 +43,7 @@ type Seq[T any] interface {
 	PrefixLength(func(T) bool) int
 	Reduce(func(T, T) T) Option[T]
 	Slice(int, int) Seq[T]
+	SplitAt(int) Pair[Seq[T], Seq[T]]
 	ToList() List[T]
 	ToGoSlice() []T
 }

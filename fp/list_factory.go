@@ -14,16 +14,16 @@ func loop[T any](
 	return loop(inc(i), inc, p, f, f(i, acc))
 }
 
-func ListOf[T any](elements ...T) Seq[T] {
-	return ListOfGoSlice(elements)
-}
-
 func ListOfGoSlice[T any](elements []T) Seq[T] {
 	i := len(elements) - 1
 	inc := func(x int) int { return x - 1 }
 	p := func(x int) bool { return x < 0 }
 	f := func(x int, acc Seq[T]) Seq[T] { return acc.Add(elements[x]) }
 	return loop(i, inc, p, f, emptyList[T]())
+}
+
+func ListOf[T any](elements ...T) Seq[T] {
+	return ListOfGoSlice(elements)
 }
 
 func ListRangeStep(from int, n int, step int) Seq[int] {

@@ -331,6 +331,16 @@ func (this List[T]) Slice(from int, until int) Seq[T] {
 	return this.Drop(lo).Take(until - lo)
 }
 
+func (this List[T]) SplitAt(i int) Pair[Seq[T], Seq[T]] {
+	if this.IsEmpty() {
+		return PairOf(emptyList[T](), emptyList[T]())
+	}
+	if !this.IsValidIndex(i) {
+		return PairOf(emptyList[T]().Concat(this), emptyList[T]())
+	}
+	return PairOf(this.Take(i), this.Drop(i))
+}
+
 func (this List[T]) ToList() List[T] {
 	return this
 }
