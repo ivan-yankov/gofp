@@ -45,6 +45,7 @@ type Seq[T any] interface {
 	MkString(string) string
 	PrefixLength(func(T) bool) int
 	Reduce(func(T, T) T) Option[T]
+	Slice(int, int) Seq[T]
 	ToList() List[T]
 }
 

@@ -357,6 +357,10 @@ func (this List[T]) Reduce(f func(T, T) T) Option[T] {
 	return SomeOf(r)
 }
 
+func (this List[T]) Slice(from int, until int) Seq[T] {
+	return this.Drop(from).Take(until - from)
+}
+
 func (this List[T]) ToList() List[T] {
 	return this
 }

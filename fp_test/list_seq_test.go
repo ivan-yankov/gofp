@@ -464,6 +464,19 @@ func TestListReduce(t *testing.T) {
 	assert.Equal(t, 120, fp.ListOf(1, 2, 3, 4, 5).Reduce(product).Get())
 }
 
+func TestListSlice(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().Slice(0, 1).IsEmpty())
+	assert.True(t, fp.ListOf[int]().Slice(1, 0).IsEmpty())
+	assert.True(t, fp.ListOf(1, 2, 3).Slice(1, 0).IsEmpty())
+
+	assert.True(t, fp.ListOf(1, 2, 3).Slice(0, 1).Equals(fp.ListOf(1)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Slice(0, 4).Equals(fp.ListOf(1, 2, 3, 4)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Slice(0, 5).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Slice(0, 6).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Slice(1, 4).Equals(fp.ListOf(2, 3, 4)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Slice(2, 9).Equals(fp.ListOf(3, 4, 5)))
+}
+
 func TestListToList(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3).ToList().Equals(fp.ListOf(1, 2, 3)))
 }
