@@ -24,5 +24,5 @@ func BenchmarkListContainsSlice(b *testing.B) {
 	la := fp.ListTabulate(na, func(i int) int { return i + 1 })
 	lb := fp.ListTabulate(nb, func(i int) int { return i + na - nb - 10 })
 	b.ResetTimer()
-	run(b, func() { la.FindSlice(lb) })
+	run(b, func() { fp.ListFindSlice(la, lb) })
 }

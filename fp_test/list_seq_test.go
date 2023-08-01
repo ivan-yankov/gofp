@@ -375,41 +375,6 @@ func TestListIsValidIndex(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3).IsValidIndex(2))
 }
 
-func TestListStartsWith(t *testing.T) {
-	assert.False(t, fp.ListOf[int]().StartsWith(fp.ListOf[int]()))
-	assert.False(t, fp.ListOf[int]().StartsWith(fp.ListOf(1)))
-	assert.False(t, fp.ListOf(1).StartsWith(fp.ListOf[int]()))
-	assert.True(t, fp.ListOf(1).StartsWith(fp.ListOf(1)))
-	assert.True(t, fp.ListOf(1, 2, 3).StartsWith(fp.ListOf(1, 2, 3)))
-	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).StartsWith(fp.ListOf(1, 2, 3)))
-	assert.False(t, fp.ListOf(1, 2, 3, 4, 5).StartsWith(fp.ListOf(4, 5, 6)))
-	assert.False(t, fp.ListOf(1, 2, 3).StartsWith(fp.ListOf(1, 2, 3, 4, 5)))
-}
-
-func TestListEndsWith(t *testing.T) {
-	assert.False(t, fp.ListOf[int]().EndsWith(fp.ListOf[int]()))
-	assert.False(t, fp.ListOf[int]().EndsWith(fp.ListOf(1)))
-	assert.False(t, fp.ListOf(1).EndsWith(fp.ListOf[int]()))
-	assert.True(t, fp.ListOf(1).EndsWith(fp.ListOf(1)))
-	assert.True(t, fp.ListOf(1, 2, 3).EndsWith(fp.ListOf(1, 2, 3)))
-	assert.False(t, fp.ListOf(1, 2, 3, 4, 5).EndsWith(fp.ListOf(4, 5, 6)))
-	assert.False(t, fp.ListOf(1, 2, 3).EndsWith(fp.ListOf(1, 2, 3, 4, 5)))
-	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).EndsWith(fp.ListOf(3, 4, 5)))
-	assert.False(t, fp.ListOf(1, 2, 3, 4, 5).EndsWith(fp.ListOf(1, 2, 3, 4, 5, 6)))
-	assert.False(t, fp.ListOf(1, 2, 3, 4, 5).EndsWith(fp.ListOf(6, 1, 2, 3, 4, 5)))
-}
-
-func TestListFindSlice(t *testing.T) {
-	assert.True(t, fp.ListOf[int]().FindSlice(fp.ListOf[int]()).NonDefined())
-	assert.True(t, fp.ListOf(1).FindSlice(fp.ListOf[int]()).NonDefined())
-	assert.True(t, fp.ListOf[int]().FindSlice(fp.ListOf(1)).NonDefined())
-	assert.True(t, fp.ListOf(1, 2, 3).FindSlice(fp.ListOf(1, 2, 3, 4, 5)).NonDefined())
-
-	assert.Equal(t, 0, fp.ListOf(1, 2, 3, 4, 5).FindSlice(fp.ListOf(1, 2, 3, 4, 5)).GetOrElse(-1))
-	assert.Equal(t, 3, fp.ListOf(1, 2, 3, 4, 5).FindSlice(fp.ListOf(4, 5)).GetOrElse(-1))
-	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).FindSlice(fp.ListOf(3, 4, 5)).GetOrElse(-1))
-}
-
 func TestListMin(t *testing.T) {
 	f := func(x int, y int) bool { return x > y }
 	assert.True(t, fp.ListOf[int]().Min(f).NonDefined())

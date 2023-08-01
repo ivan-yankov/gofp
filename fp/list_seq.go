@@ -244,48 +244,6 @@ func (this List[T]) IsValidIndex(i int) bool {
 	return i >= 0 && i < this.Size()
 }
 
-func (this List[T]) StartsWith(b Seq[T]) bool {
-	return 0 == this.FindSlice(b).GetOrElse(-1)
-}
-
-func (this List[T]) EndsWith(b Seq[T]) bool {
-	return this.Reverse().StartsWith(b.Reverse())
-}
-
-func (this List[T]) FindSlice(that Seq[T]) Option[int] {
-	if this.IsEmpty() || that.IsEmpty() || (this.Size() < that.Size()) {
-		return None[int]()
-	}
-
-	var eq func(Seq[T], Seq[T], bool) bool
-	eq = func(sa Seq[T], sb Seq[T], acc bool) bool {
-		if sa.IsEmpty() || sb.IsEmpty() {
-			return acc
-		}
-		return eq(
-			sa.Tail(),
-			sb.Tail(),
-			acc && reflect.DeepEqual(
-				sa.HeadOption().Get(),
-				sb.HeadOption().Get(),
-			),
-		)
-	}
-
-	var it func(Seq[T], int, Option[int]) Option[int]
-	it = func(s Seq[T], i int, acc Option[int]) Option[int] {
-		if acc.IsDefined() || s.IsEmpty() {
-			return acc
-		}
-		if eq(s, that, true) {
-			return it(s.Tail(), i+1, SomeOf(i))
-		}
-		return it(s.Tail(), i+1, None[int]())
-	}
-
-	return it(this, 0, None[int]())
-}
-
 func (this List[T]) Min(comp func(T, T) bool) Option[T] {
 	if this.IsEmpty() {
 		return None[T]()

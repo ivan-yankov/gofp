@@ -105,3 +105,38 @@ func TestListSliding(t *testing.T) {
 	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6), 3, 3).Equals(fp.ListOf(fp.ListOf(1, 2, 3), fp.ListOf(4, 5, 6))))
 	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6, 7), 3, 3).Equals(fp.ListOf(fp.ListOf(1, 2, 3), fp.ListOf(4, 5, 6), fp.ListOf(7))))
 }
+
+func TestListStartsWith(t *testing.T) {
+	assert.False(t, fp.ListStartsWith(fp.ListOf[int](), fp.ListOf[int]()))
+	assert.False(t, fp.ListStartsWith(fp.ListOf[int](), fp.ListOf(1)))
+	assert.False(t, fp.ListStartsWith(fp.ListOf(1), fp.ListOf[int]()))
+	assert.True(t, fp.ListStartsWith(fp.ListOf(1), fp.ListOf(1)))
+	assert.True(t, fp.ListStartsWith(fp.ListOf(1, 2, 3), fp.ListOf(1, 2, 3)))
+	assert.True(t, fp.ListStartsWith(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(1, 2, 3)))
+	assert.False(t, fp.ListStartsWith(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(4, 5, 6)))
+	assert.False(t, fp.ListStartsWith(fp.ListOf(1, 2, 3), fp.ListOf(1, 2, 3, 4, 5)))
+}
+
+func TestListEndsWith(t *testing.T) {
+	assert.False(t, fp.ListEndsWith(fp.ListOf[int](), fp.ListOf[int]()))
+	assert.False(t, fp.ListEndsWith(fp.ListOf[int](), fp.ListOf(1)))
+	assert.False(t, fp.ListEndsWith(fp.ListOf(1), fp.ListOf[int]()))
+	assert.True(t, fp.ListEndsWith(fp.ListOf(1), fp.ListOf(1)))
+	assert.True(t, fp.ListEndsWith(fp.ListOf(1, 2, 3), fp.ListOf(1, 2, 3)))
+	assert.False(t, fp.ListEndsWith(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(4, 5, 6)))
+	assert.False(t, fp.ListEndsWith(fp.ListOf(1, 2, 3), fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListEndsWith(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(3, 4, 5)))
+	assert.False(t, fp.ListEndsWith(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(1, 2, 3, 4, 5, 6)))
+	assert.False(t, fp.ListEndsWith(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(6, 1, 2, 3, 4, 5)))
+}
+
+func TestListFindSlice(t *testing.T) {
+	assert.True(t, fp.ListFindSlice(fp.ListOf[int](), fp.ListOf[int]()).NonDefined())
+	assert.True(t, fp.ListFindSlice(fp.ListOf(1), fp.ListOf[int]()).NonDefined())
+	assert.True(t, fp.ListFindSlice(fp.ListOf[int](), fp.ListOf(1)).NonDefined())
+	assert.True(t, fp.ListFindSlice(fp.ListOf(1, 2, 3), fp.ListOf(1, 2, 3, 4, 5)).NonDefined())
+
+	assert.Equal(t, 0, fp.ListFindSlice(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(1, 2, 3, 4, 5)).GetOrElse(-1))
+	assert.Equal(t, 3, fp.ListFindSlice(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(4, 5)).GetOrElse(-1))
+	assert.Equal(t, 2, fp.ListFindSlice(fp.ListOf(1, 2, 3, 4, 5), fp.ListOf(3, 4, 5)).GetOrElse(-1))
+}

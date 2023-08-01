@@ -91,3 +91,31 @@ func ListSliding[T any](seq Seq[T], size int, step int) Seq[Seq[T]] {
 	}
 	return it(seq, emptyList[Seq[T]]()).Reverse()
 }
+
+func ListStartsWith[T any](a Seq[T], b Seq[T]) bool {
+	return 0 == ListFindSlice(a, b).GetOrElse(-1)
+}
+
+func ListEndsWith[T any](a Seq[T], b Seq[T]) bool {
+	return ListStartsWith(a.Reverse(), b.Reverse())
+}
+
+func ListFindSlice[T any](a Seq[T], b Seq[T]) Option[int] {
+	if a.IsEmpty() || b.IsEmpty() || (a.Size() < b.Size()) {
+		return None[int]()
+	}
+
+	found := ListSliding(ListZipWithIndex(a), b.Size(), 1).Find(
+		func(x Seq[Pair[T, int]]) bool {
+			return ListMap(x, func(y Pair[T, int]) T { return y.GetA() }).
+				Equals(b)
+		},
+	)
+
+	return OptionMap(
+		found,
+		func(x Seq[Pair[T, int]]) int {
+			return x.HeadOption().Get().GetB()
+		},
+	)
+}
