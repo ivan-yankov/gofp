@@ -46,22 +46,3 @@ type Seq[T any] interface {
 	ToList() List[T]
 	ToGoSlice() []T
 }
-
-func add[T any](e T, acc Seq[T]) Seq[T] {
-	return acc.Add(e)
-}
-
-func collect[T any](
-	seq Seq[T],
-	appendCondition func(int, T, Seq[T]) bool,
-	emptySeq func() Seq[T]) Seq[T] {
-
-	f := func(i int, e T, acc Seq[T]) Seq[T] {
-		if appendCondition(i, e, acc) {
-			return acc.Add(e)
-		}
-		return acc
-	}
-
-	return ListFoldCount[T, Seq[T]](seq, f, emptySeq()).Reverse()
-}
