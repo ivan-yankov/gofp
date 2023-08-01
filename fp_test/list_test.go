@@ -77,3 +77,31 @@ func TestListFlatMap(t *testing.T) {
 	assert.True(t, fp.ListFlatMap(fp.ListOf(1), f).Equals(fp.ListOf("result", "r1")))
 	assert.True(t, fp.ListFlatMap(fp.ListOf(1, 2, 3), f).Equals(fp.ListOf("result", "r1", "result", "r2", "result", "r3")))
 }
+
+func TestListSliding(t *testing.T) {
+	assert.True(t, fp.ListSliding(fp.ListOf[int](), 0, 0).IsEmpty())
+	assert.True(t, fp.ListSliding(fp.ListOf[int](), 0, 1).IsEmpty())
+	assert.True(t, fp.ListSliding(fp.ListOf[int](), 1, 0).IsEmpty())
+	assert.True(t, fp.ListSliding(fp.ListOf(1), -1, 1).IsEmpty())
+	assert.True(t, fp.ListSliding(fp.ListOf(1), 1, -1).IsEmpty())
+
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3), 1, 1).Equals(fp.ListOf(fp.ListOf(1), fp.ListOf(2), fp.ListOf(3))))
+
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6), 2, 1).Equals(fp.ListOf(fp.ListOf(1, 2), fp.ListOf(2, 3), fp.ListOf(3, 4), fp.ListOf(4, 5), fp.ListOf(5, 6))))
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6, 7), 2, 1).Equals(fp.ListOf(fp.ListOf(1, 2), fp.ListOf(2, 3), fp.ListOf(3, 4), fp.ListOf(4, 5), fp.ListOf(5, 6), fp.ListOf(6, 7))))
+
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5), 2, 2).Equals(fp.ListOf(fp.ListOf(1, 2), fp.ListOf(3, 4), fp.ListOf(5))))
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6), 2, 2).Equals(fp.ListOf(fp.ListOf(1, 2), fp.ListOf(3, 4), fp.ListOf(5, 6))))
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6, 7), 2, 2).Equals(fp.ListOf(fp.ListOf(1, 2), fp.ListOf(3, 4), fp.ListOf(5, 6), fp.ListOf(7))))
+
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6), 2, 3).Equals(fp.ListOf(fp.ListOf(1, 2), fp.ListOf(4, 5))))
+
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6), 3, 1).Equals(fp.ListOf(fp.ListOf(1, 2, 3), fp.ListOf(2, 3, 4), fp.ListOf(3, 4, 5), fp.ListOf(4, 5, 6))))
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6, 7), 3, 1).Equals(fp.ListOf(fp.ListOf(1, 2, 3), fp.ListOf(2, 3, 4), fp.ListOf(3, 4, 5), fp.ListOf(4, 5, 6), fp.ListOf(5, 6, 7))))
+
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6), 3, 2).Equals(fp.ListOf(fp.ListOf(1, 2, 3), fp.ListOf(3, 4, 5), fp.ListOf(5, 6))))
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6, 7), 3, 2).Equals(fp.ListOf(fp.ListOf(1, 2, 3), fp.ListOf(3, 4, 5), fp.ListOf(5, 6, 7))))
+
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6), 3, 3).Equals(fp.ListOf(fp.ListOf(1, 2, 3), fp.ListOf(4, 5, 6))))
+	assert.True(t, fp.ListSliding(fp.ListOf(1, 2, 3, 4, 5, 6, 7), 3, 3).Equals(fp.ListOf(fp.ListOf(1, 2, 3), fp.ListOf(4, 5, 6), fp.ListOf(7))))
+}

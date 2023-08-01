@@ -73,3 +73,21 @@ func ListFlatMap[A, B any](seq Seq[A], f func(A) Seq[B]) Seq[B] {
 	}
 	return it(seq, emptyList[B]())
 }
+
+func ListSliding[T any](seq Seq[T], size int, step int) Seq[Seq[T]] {
+	if size <= 0 || step <= 0 {
+		return emptyList[Seq[T]]()
+	}
+
+	var it func(Seq[T], Seq[Seq[T]]) Seq[Seq[T]]
+	it = func(s Seq[T], acc Seq[Seq[T]]) Seq[Seq[T]] {
+		if s.Size() <= size {
+			if s.NonEmpty() {
+				return acc.Add(s.Take(size))
+			}
+			return acc
+		}
+		return it(s.Drop(step), acc.Add(s.Take(size)))
+	}
+	return it(seq, emptyList[Seq[T]]()).Reverse()
+}

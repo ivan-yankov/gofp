@@ -358,9 +358,32 @@ func (this List[T]) Reduce(f func(T, T) T) Option[T] {
 }
 
 func (this List[T]) Slice(from int, until int) Seq[T] {
-	return this.Drop(from).Take(until - from)
+	max := func(x int, y int) int {
+		if x >= y {
+			return x
+		}
+		return y
+	}
+
+	lo := max(from, 0)
+	if until <= lo || this.IsEmpty() {
+		return emptyList[T]()
+	}
+
+	return this.Drop(lo).Take(until - lo)
 }
 
 func (this List[T]) ToList() List[T] {
 	return this
+}
+
+func (this List[T]) ToGoSlice() []T {
+	var it func(Seq[T], []T) []T
+	it = func(seq Seq[T], acc []T) []T {
+		if seq.IsEmpty() {
+			return acc
+		}
+		return it(seq.Tail(), append(acc, seq.HeadOption().Get()))
+	}
+	return it(this, make([]T, 0))
 }

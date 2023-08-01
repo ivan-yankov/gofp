@@ -47,6 +47,7 @@ type Seq[T any] interface {
 	Reduce(func(T, T) T) Option[T]
 	Slice(int, int) Seq[T]
 	ToList() List[T]
+	ToGoSlice() []T
 }
 
 func add[T any](e T, acc Seq[T]) Seq[T] {

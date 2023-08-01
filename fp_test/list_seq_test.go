@@ -480,3 +480,8 @@ func TestListSlice(t *testing.T) {
 func TestListToList(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3).ToList().Equals(fp.ListOf(1, 2, 3)))
 }
+
+func TestListToGoSlice(t *testing.T) {
+	s := []int{1, 2, 3}
+	assert.Equal(t, s, fp.ListOf(1, 2, 3).ToGoSlice())
+}
