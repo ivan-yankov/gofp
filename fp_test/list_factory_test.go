@@ -30,6 +30,29 @@ func TestListOf_NonEmpty(t *testing.T) {
 	assert.False(t, lst.IsEmpty())
 }
 
+func TestListOfGoSlice_Empty(t *testing.T) {
+	lst := fp.ListOfGoSlice[int]([]int{})
+	assert.True(t, lst.HeadOption().NonDefined())
+	assert.True(t, lst.Tail().IsEmpty())
+	assert.True(t, lst.IsEmpty())
+}
+
+func TestListOfGoSlice_One(t *testing.T) {
+	lst := fp.ListOfGoSlice([]int{1})
+	assert.Equal(t, 1, lst.HeadOption().GetOrElse(0))
+	assert.True(t, lst.Tail().IsEmpty())
+	assert.False(t, lst.IsEmpty())
+}
+
+func TestListOfGoSlice_NonEmpty(t *testing.T) {
+	lst := fp.ListOfGoSlice([]int{1, 2, 3})
+	assert.Equal(t, 1, lst.HeadOption().GetOrElse(0))
+	assert.Equal(t, 2, lst.Tail().HeadOption().GetOrElse(0))
+	assert.Equal(t, 3, lst.Tail().Tail().HeadOption().GetOrElse(0))
+	assert.True(t, lst.Tail().Tail().Tail().IsEmpty())
+	assert.False(t, lst.IsEmpty())
+}
+
 func TestListRangeStep(t *testing.T) {
 	assert.True(t, fp.ListRangeStep(0, -2, 1).IsEmpty())
 	assert.True(t, fp.ListRangeStep(0, 2, -1).IsEmpty())

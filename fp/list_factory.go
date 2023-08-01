@@ -15,6 +15,10 @@ func loop[T any](
 }
 
 func ListOf[T any](elements ...T) Seq[T] {
+	return ListOfGoSlice(elements)
+}
+
+func ListOfGoSlice[T any](elements []T) Seq[T] {
 	i := len(elements) - 1
 	inc := func(x int) int { return x - 1 }
 	p := func(x int) bool { return x < 0 }
