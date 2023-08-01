@@ -245,14 +245,14 @@ func (this List[T]) IsValidIndex(i int) bool {
 }
 
 func (this List[T]) StartsWith(b Seq[T]) bool {
-	return 0 == this.ContainsSlice(b).GetOrElse(-1)
+	return 0 == this.FindSlice(b).GetOrElse(-1)
 }
 
 func (this List[T]) EndsWith(b Seq[T]) bool {
 	return this.Reverse().StartsWith(b.Reverse())
 }
 
-func (this List[T]) ContainsSlice(that Seq[T]) Option[int] {
+func (this List[T]) FindSlice(that Seq[T]) Option[int] {
 	if this.IsEmpty() || that.IsEmpty() || (this.Size() < that.Size()) {
 		return None[int]()
 	}
