@@ -296,45 +296,15 @@ func (this List[T]) Max(less func(T, T) bool) Option[T] {
 }
 
 func (this List[T]) MkString(sep string) string {
-	strings := SeqMap[T, string](
-		this,
-		func(x T) string { return fmt.Sprintf("%+v", x) },
-	)
-	lastIndex := this.Size() - 1
-	f := func(i int, e string, acc string) string {
-		if i == lastIndex {
-			return acc + e
-		}
-		return acc + e + sep
-	}
-
-	return SeqFoldCount[string, string](strings, f, "")
+	return mkString[T](this, sep)
 }
 
 func (this List[T]) PrefixLength(p func(T) bool) int {
-	type Acc struct {
-		n     int
-		check bool
-	}
-
-	f := func(e T, acc Acc) Acc {
-		if acc.check && p(e) {
-			return Acc{acc.n + 1, true}
-		}
-		return Acc{acc.n, false}
-	}
-
-	r := SeqFoldLeft[T, Acc](this, f, Acc{0, true})
-	return r.n
+	return prefixLength[T](this, p)
 }
 
 func (this List[T]) Reduce(f func(T, T) T) Option[T] {
-	if this.IsEmpty() {
-		return None[T]()
-	}
-
-	r := SeqFoldLeft[T, T](this.Tail(), f, this.HeadOption().Get())
-	return SomeOf(r)
+	return reduce[T](this, f)
 }
 
 func (this List[T]) Slice(from int, until int) Seq[T] {

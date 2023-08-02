@@ -55,11 +55,7 @@ func (this Array[T]) Equals(that Seq[T]) bool {
 }
 
 func (this Array[T]) Reverse() Seq[T] {
-	reversed := []T{}
-	for i := this.Size() - 1; i >= 0; i-- {
-		reversed = append(reversed, this.data[i])
-	}
-	return ArrayOfGoSlice(reversed)
+	return SeqFoldLeft[T, Seq[T]](this, add[T], emptyArray[T]())
 }
 
 func (this Array[T]) Append(e T) Seq[T] {
@@ -93,23 +89,16 @@ func (this Array[T]) Exists(p func(T) bool) bool {
 }
 
 func (this Array[T]) Filter(p func(T) bool) Seq[T] {
-	result := []T{}
-	for i := 0; i < this.Size(); i++ {
-		if p(this.data[i]) {
-			result = append(result, this.data[i])
-		}
-	}
-	return ArrayOfGoSlice(result)
+	return collect[T](
+		this,
+		func(_ int, e T, _ Seq[T]) bool { return p(e) },
+		emptyArray[T],
+	)
 }
 
 func (this Array[T]) FilterNot(p func(T) bool) Seq[T] {
-	result := []T{}
-	for i := 0; i < this.Size(); i++ {
-		if !p(this.data[i]) {
-			result = append(result, this.data[i])
-		}
-	}
-	return ArrayOfGoSlice(result)
+	f := func(e T) bool { return !p(e) }
+	return this.Filter(f)
 }
 
 func (this Array[T]) Find(p func(T) bool) Option[T] {
@@ -127,13 +116,11 @@ func (this Array[T]) Diff(that Seq[T]) Seq[T] {
 }
 
 func (this Array[T]) Distinct() Seq[T] {
-	result := []T{}
-	for i := 0; i < this.Size(); i++ {
-		if !ArrayOfGoSlice(result).ContainsElement(this.data[i]) {
-			result = append(result, this.data[i])
-		}
-	}
-	return ArrayOfGoSlice(result)
+	return collect[T](
+		this,
+		func(_ int, e T, acc Seq[T]) bool { return !acc.ContainsElement(e) },
+		emptyArray[T],
+	)
 }
 
 func (this Array[T]) Drop(n int) Seq[T] {
@@ -304,46 +291,15 @@ func (this Array[T]) Max(less func(T, T) bool) Option[T] {
 }
 
 func (this Array[T]) MkString(sep string) string {
-	if this.IsEmpty() {
-		return ""
-	}
-
-	result := ""
-	for i := 0; i < this.Size(); i++ {
-		result += fmt.Sprintf("%+v", this.data[i])
-		if i < this.Size()-1 {
-			result += sep
-		}
-	}
-	return result
+	return mkString[T](this, sep)
 }
 
 func (this Array[T]) PrefixLength(p func(T) bool) int {
-	acc := 0
-	for i := 0; i < this.Size(); i++ {
-		if p(this.data[i]) {
-			acc++
-		} else {
-			return acc
-		}
-	}
-	return acc
+	return prefixLength[T](this, p)
 }
 
 func (this Array[T]) Reduce(f func(T, T) T) Option[T] {
-	if this.IsEmpty() {
-		return None[T]()
-	}
-
-	if this.Size() == 1 {
-		return SomeOf(this.data[0])
-	}
-
-	acc := this.data[0]
-	for i := 1; i < this.Size(); i++ {
-		acc = f(acc, this.data[i])
-	}
-	return SomeOf(acc)
+	return reduce[T](this, f)
 }
 
 func (this Array[T]) Slice(from int, until int) Seq[T] {
@@ -360,7 +316,7 @@ func (this Array[T]) SplitAt(i int) Pair[Seq[T], Seq[T]] {
 		return PairOf(emptyArray[T](), emptyArray[T]())
 	}
 	if !this.IsValidIndex(i) {
-		return PairOf(emptyArray[T]().Concat(this), emptyArray[T]())
+		return PairOf(emptyList[T]().Concat(this), emptyArray[T]())
 	}
 	return PairOf(this.Take(i), this.Drop(i))
 }

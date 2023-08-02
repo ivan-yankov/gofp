@@ -1,5 +1,9 @@
 package fp
 
+import (
+	"fmt"
+)
+
 func loop[T any](
 	i int,
 	inc func(int) int,
@@ -75,4 +79,46 @@ func maxInt(x int, y int) int {
 		return x
 	}
 	return y
+}
+
+func mkString[T any](seq Seq[T], sep string) string {
+	strings := SeqMap[T, string](
+		seq,
+		func(x T) string { return fmt.Sprintf("%+v", x) },
+	)
+	lastIndex := seq.Size() - 1
+	f := func(i int, e string, acc string) string {
+		if i == lastIndex {
+			return acc + e
+		}
+		return acc + e + sep
+	}
+
+	return SeqFoldCount[string, string](strings, f, "")
+}
+
+func prefixLength[T any](seq Seq[T], p func(T) bool) int {
+	type Acc struct {
+		n     int
+		check bool
+	}
+
+	f := func(e T, acc Acc) Acc {
+		if acc.check && p(e) {
+			return Acc{acc.n + 1, true}
+		}
+		return Acc{acc.n, false}
+	}
+
+	r := SeqFoldLeft[T, Acc](seq, f, Acc{0, true})
+	return r.n
+}
+
+func reduce[T any](seq Seq[T], f func(T, T) T) Option[T] {
+	if seq.IsEmpty() {
+		return None[T]()
+	}
+
+	r := SeqFoldLeft[T, T](seq.Tail(), f, seq.HeadOption().Get())
+	return SomeOf(r)
 }
