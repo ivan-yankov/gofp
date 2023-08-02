@@ -355,6 +355,10 @@ func (this List[T]) ToList() List[T] {
 	return this
 }
 
+func (this List[T]) ToArray() Array[T] {
+	return Array[T]{this.ToGoSlice()}
+}
+
 func (this List[T]) ToGoSlice() []T {
 	var it func(Seq[T], []T) []T
 	it = func(seq Seq[T], acc []T) []T {

@@ -46,5 +46,6 @@ type Seq[T any] interface {
 	SplitAt(int) Pair[Seq[T], Seq[T]]
 	Sort(func(T, T) bool) Seq[T]
 	ToList() List[T]
+	ToArray() Array[T]
 	ToGoSlice() []T
 }
