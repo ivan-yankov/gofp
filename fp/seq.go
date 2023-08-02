@@ -44,6 +44,7 @@ type Seq[T any] interface {
 	Reduce(func(T, T) T) Option[T]
 	Slice(int, int) Seq[T]
 	SplitAt(int) Pair[Seq[T], Seq[T]]
+	Sort(func(T, T) bool) Seq[T]
 	ToList() List[T]
 	ToGoSlice() []T
 }

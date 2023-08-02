@@ -376,14 +376,14 @@ func TestListIsValidIndex(t *testing.T) {
 }
 
 func TestListMin(t *testing.T) {
-	f := func(x int, y int) bool { return x > y }
+	f := func(x int, y int) bool { return x < y }
 	assert.True(t, fp.ListOf[int]().Min(f).NonDefined())
 	assert.Equal(t, 1, fp.ListOf(1).Min(f).Get())
 	assert.Equal(t, 1, fp.ListOf(1, 2, 3, 4, 5).Min(f).Get())
 }
 
 func TestListMax(t *testing.T) {
-	f := func(x int, y int) bool { return x > y }
+	f := func(x int, y int) bool { return x < y }
 	assert.True(t, fp.ListOf[int]().Max(f).NonDefined())
 	assert.Equal(t, 1, fp.ListOf(1).Max(f).Get())
 	assert.Equal(t, 5, fp.ListOf(1, 2, 3, 4, 5).Max(f).Get())
@@ -448,6 +448,14 @@ func TestListSplitAt(t *testing.T) {
 	assert.Equal(t, fp.PairOf(fp.ListOf[int](), fp.ListOf(1, 2, 3, 4, 5)), fp.ListOf(1, 2, 3, 4, 5).SplitAt(0))
 	assert.Equal(t, fp.PairOf(fp.ListOf[int](1, 2), fp.ListOf(3, 4, 5)), fp.ListOf(1, 2, 3, 4, 5).SplitAt(2))
 	assert.Equal(t, fp.PairOf(fp.ListOf(1, 2, 3, 4), fp.ListOf[int](5)), fp.ListOf(1, 2, 3, 4, 5).SplitAt(4))
+}
+
+func TestListSort(t *testing.T) {
+	f := func(x int, y int) bool { return x < y }
+	assert.True(t, fp.ListOf[int]().Sort(f).IsEmpty())
+	assert.True(t, fp.ListOf(1).Sort(f).Equals(fp.ListOf(1)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Sort(f).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(3, 2, 1, 4, 5).Sort(f).Equals(fp.ListOf(1, 2, 3, 4, 5)))
 }
 
 func TestListToList(t *testing.T) {

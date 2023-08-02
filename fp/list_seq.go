@@ -3,6 +3,7 @@ package fp
 import (
 	"fmt"
 	"reflect"
+	"sort"
 )
 
 func (this List[T]) Add(e T) Seq[T] {
@@ -244,32 +245,32 @@ func (this List[T]) IsValidIndex(i int) bool {
 	return i >= 0 && i < this.Size()
 }
 
-func (this List[T]) Min(comp func(T, T) bool) Option[T] {
+func (this List[T]) Min(less func(T, T) bool) Option[T] {
 	if this.IsEmpty() {
 		return None[T]()
 	}
 
 	f := func(x T, y T) T {
-		if comp(x, y) {
-			return y
+		if less(x, y) {
+			return x
 		}
-		return x
+		return y
 	}
 
 	r := ListFoldLeft[T, T](this, f, this.head)
 	return SomeOf(r)
 }
 
-func (this List[T]) Max(comp func(T, T) bool) Option[T] {
+func (this List[T]) Max(less func(T, T) bool) Option[T] {
 	if this.IsEmpty() {
 		return None[T]()
 	}
 
 	f := func(x T, y T) T {
-		if comp(x, y) {
-			return x
+		if less(x, y) {
+			return y
 		}
-		return y
+		return x
 	}
 
 	r := ListFoldLeft[T, T](this, f, this.head)
@@ -339,6 +340,15 @@ func (this List[T]) SplitAt(i int) Pair[Seq[T], Seq[T]] {
 		return PairOf(emptyList[T]().Concat(this), emptyList[T]())
 	}
 	return PairOf(this.Take(i), this.Drop(i))
+}
+
+func (this List[T]) Sort(less func(T, T) bool) Seq[T] {
+	s := this.ToGoSlice()
+	sort.Slice(
+		s,
+		func(i int, j int) bool { return less(s[i], s[j]) },
+	)
+	return ListOfGoSlice(s)
 }
 
 func (this List[T]) ToList() List[T] {
