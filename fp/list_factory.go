@@ -47,7 +47,7 @@ func ListTabulate[T any](n int, f func(int) T) Seq[T] {
 		return acc.Add(f(i))
 	}
 
-	return ListFoldLeft[int, Seq[T]](indexes, fAcc, emptyList[T]()).Reverse()
+	return SeqFoldLeft[int, Seq[T]](indexes, fAcc, emptyList[T]()).Reverse()
 }
 
 func ListFill[T any](n int, e T) Seq[T] {

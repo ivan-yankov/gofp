@@ -12,6 +12,13 @@ func emptyArray[T any]() Seq[T] {
 	return Array[T]{[]T{}}
 }
 
+func emptySeq[T any](list bool) Seq[T] {
+	if list {
+		return emptyList[T]()
+	}
+	return emptyArray[T]()
+}
+
 func findIndex[T any](seq Seq[T], p func(int, T, Option[int]) bool) int {
 	f := func(i int, e T, acc Option[int]) Option[int] {
 		if p(i, e, acc) {
@@ -20,7 +27,7 @@ func findIndex[T any](seq Seq[T], p func(int, T, Option[int]) bool) int {
 		return acc
 	}
 
-	return ListFoldCount[T, Option[int]](seq, f, None[int]()).GetOrElse(-1)
+	return SeqFoldCount[T, Option[int]](seq, f, None[int]()).GetOrElse(-1)
 }
 
 func add[T any](e T, acc Seq[T]) Seq[T] {
@@ -39,7 +46,7 @@ func collect[T any](
 		return acc
 	}
 
-	return ListFoldCount[T, Seq[T]](seq, f, emptySeq()).Reverse()
+	return SeqFoldCount[T, Seq[T]](seq, f, emptySeq()).Reverse()
 }
 
 func minInt(x int, y int) int {
