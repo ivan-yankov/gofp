@@ -181,8 +181,7 @@ func (this List[T]) ForEach(f func(T) Unit) Unit {
 }
 
 func (this List[T]) Indexes() Seq[int] {
-	f := func(i int, _ T, acc Seq[int]) Seq[int] { return acc.Add(i) }
-	return ListFoldCount[T, Seq[int]](this, f, emptyList[int]()).Reverse()
+	return ListRange(0, this.Size())
 }
 
 func (this List[T]) IndexOf(e T) int {
@@ -317,14 +316,7 @@ func (this List[T]) Reduce(f func(T, T) T) Option[T] {
 }
 
 func (this List[T]) Slice(from int, until int) Seq[T] {
-	max := func(x int, y int) int {
-		if x >= y {
-			return x
-		}
-		return y
-	}
-
-	lo := max(from, 0)
+	lo := maxInt(from, 0)
 	if until <= lo || this.IsEmpty() {
 		return emptyList[T]()
 	}

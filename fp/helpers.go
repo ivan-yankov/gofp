@@ -8,6 +8,10 @@ func emptyList[T any]() Seq[T] {
 	}
 }
 
+func emptyArray[T any]() Seq[T] {
+	return Array[T]{[]T{}}
+}
+
 func findIndex[T any](seq Seq[T], p func(int, T, Option[int]) bool) int {
 	f := func(i int, e T, acc Option[int]) Option[int] {
 		if p(i, e, acc) {
@@ -36,4 +40,18 @@ func collect[T any](
 	}
 
 	return ListFoldCount[T, Seq[T]](seq, f, emptySeq()).Reverse()
+}
+
+func minInt(x int, y int) int {
+	if x <= y {
+		return x
+	}
+	return y
+}
+
+func maxInt(x int, y int) int {
+	if x >= y {
+		return x
+	}
+	return y
 }
