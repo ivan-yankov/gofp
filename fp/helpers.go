@@ -2,9 +2,9 @@ package fp
 
 func emptyList[T any]() Seq[T] {
 	return List[T]{
-		head:  *new(T),
-		tail:  nil,
-		empty: true,
+		head: *new(T),
+		tail: nil,
+		size: 0,
 	}
 }
 

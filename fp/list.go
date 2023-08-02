@@ -7,9 +7,9 @@ import (
 )
 
 type List[T any] struct {
-	head  T
-	tail  Seq[T]
-	empty bool
+	head T
+	tail Seq[T]
+	size int
 }
 
 func (this List[T]) Add(e T) Seq[T] {
@@ -17,27 +17,27 @@ func (this List[T]) Add(e T) Seq[T] {
 		return List[T]{
 			head: e,
 			tail: List[T]{
-				head:  this.head,
-				tail:  this.tail,
-				empty: false,
+				head: this.head,
+				tail: this.tail,
+				size: this.size,
 			},
-			empty: false,
+			size: this.size + 1,
 		}
 	}
 
 	return List[T]{
-		head:  e,
-		tail:  nil,
-		empty: false,
+		head: e,
+		tail: nil,
+		size: 1,
 	}
 }
 
 func (this List[T]) IsEmpty() bool {
-	return this.empty
+	return this.Size() == 0
 }
 
 func (this List[T]) NonEmpty() bool {
-	return !this.empty
+	return this.Size() != 0
 }
 
 func (this List[T]) HeadOption() Option[T] {
@@ -80,8 +80,7 @@ func (this List[T]) ContainsElement(e T) bool {
 }
 
 func (this List[T]) Size() int {
-	f := func(_ T, acc int) int { return acc + 1 }
-	return SeqFoldLeft[T, int](this, f, 0)
+	return this.size
 }
 
 func (this List[T]) Exists(p func(T) bool) bool {
