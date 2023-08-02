@@ -12,29 +12,17 @@ func ArrayOf[T any](elements ...T) Seq[T] {
 }
 
 func ArrayRangeStep(from int, n int, step int) Seq[int] {
-	if n <= 0 || step < 0 {
-		return emptyArray[int]()
-	}
-
-	result := []int{}
-	for i := 0; i < n; i++ {
-		result = append(result, from+step*i)
-	}
-	return ArrayOfGoSlice(result)
+	return seqRangeStep(from, n, step, false)
 }
 
 func ArrayRange(from int, n int) Seq[int] {
-	return ArrayRangeStep(from, n, 1)
+	return seqRange(from, n, false)
 }
 
 func ArrayTabulate[T any](n int, f func(int) T) Seq[T] {
-	result := []T{}
-	for i := 0; i < n; i++ {
-		result = append(result, f(i))
-	}
-	return ArrayOfGoSlice(result)
+	return seqTabulate(n, f, false)
 }
 
 func ArrayFill[T any](n int, e T) Seq[T] {
-	return ArrayTabulate(n, func(i int) T { return e })
+	return seqFill(n, e, false)
 }
