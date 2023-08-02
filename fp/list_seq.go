@@ -129,7 +129,7 @@ func (this List[T]) DropRight(n int) Seq[T] {
 	return this.Reverse().Drop(n).Reverse()
 }
 
-func (this List[T]) DropWhile(p func(e T) bool) Seq[T] {
+func (this List[T]) DropWhile(p func(T) bool) Seq[T] {
 	return collect[T](
 		this,
 		func(_ int, e T, acc Seq[T]) bool { return acc.NonEmpty() || !p(e) },
@@ -153,7 +153,7 @@ func (this List[T]) TakeRight(n int) Seq[T] {
 	return this.Reverse().Take(n).Reverse()
 }
 
-func (this List[T]) TakeWhile(p func(e T) bool) Seq[T] {
+func (this List[T]) TakeWhile(p func(T) bool) Seq[T] {
 	type Acc struct {
 		result Seq[T]
 		flag   bool

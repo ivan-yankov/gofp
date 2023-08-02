@@ -1,6 +1,9 @@
 package fp
 
 func ArrayOfGoSlice[T any](elements []T) Seq[T] {
+	if len(elements) == 0 {
+		return emptyArray[T]()
+	}
 	return Array[T]{elements}
 }
 

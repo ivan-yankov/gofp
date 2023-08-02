@@ -24,6 +24,17 @@ func TestListZip(t *testing.T) {
 	assert.True(t, fp.ListZip(fp.ListOf("zero", "one", "two", "next", "one more"), fp.ListOf(0, 1, 2)).Equals(exp))
 }
 
+func TestListZipWithIndex(t *testing.T) {
+	exp := fp.ListOf(
+		fp.PairOf("zero", 0),
+		fp.PairOf("one", 1),
+		fp.PairOf("two", 2),
+	)
+
+	assert.True(t, fp.ListZipWithIndex(fp.ListOf[string]()).IsEmpty())
+	assert.True(t, fp.ListZipWithIndex(fp.ListOf("zero", "one", "two")).Equals(exp))
+}
+
 func TestListFoldLeft(t *testing.T) {
 	f := func(i int, acc string) string {
 		return acc + fmt.Sprint(i)

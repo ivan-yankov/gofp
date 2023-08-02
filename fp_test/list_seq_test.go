@@ -252,17 +252,6 @@ func TestListIndexes(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Indexes().Equals(fp.ListOf(0, 1, 2, 3, 4)))
 }
 
-func TestListZipWithIndex(t *testing.T) {
-	exp := fp.ListOf(
-		fp.PairOf("zero", 0),
-		fp.PairOf("one", 1),
-		fp.PairOf("two", 2),
-	)
-
-	assert.True(t, fp.ListZipWithIndex(fp.ListOf[string]()).IsEmpty())
-	assert.True(t, fp.ListZipWithIndex(fp.ListOf("zero", "one", "two")).Equals(exp))
-}
-
 func TestListIndexOf(t *testing.T) {
 	assert.Equal(t, -1, fp.ListOf[int]().IndexOf(1))
 	assert.Equal(t, 0, fp.ListOf(1).IndexOf(1))
@@ -459,7 +448,11 @@ func TestListSort(t *testing.T) {
 }
 
 func TestListToList(t *testing.T) {
-	assert.True(t, fp.ListOf(1, 2, 3).ToList().Equals(fp.ListOf(1, 2, 3)))
+	assert.Equal(t, fp.ListOf(1, 2, 3), fp.ListOf(1, 2, 3).ToList())
+}
+
+func TestListToArray(t *testing.T) {
+	assert.Equal(t, fp.ArrayOf(1, 2, 3), fp.ListOf(1, 2, 3).ToArray())
 }
 
 func TestListToGoSlice(t *testing.T) {
