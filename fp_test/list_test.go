@@ -16,6 +16,12 @@ func TestListAdd(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2).Add(3).Add(4).Equals(fp.ListOf(4, 3, 1, 2)))
 }
 
+func TestListGet(t *testing.T) {
+	assert.Equal(t, 1, fp.ListOf(1, 2, 3).Get(0))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3).Get(1))
+	assert.Equal(t, 3, fp.ListOf(1, 2, 3).Get(2))
+}
+
 func TestListIsEmpty(t *testing.T) {
 	assert.True(t, fp.ListOf[int]().IsEmpty())
 	assert.False(t, fp.ListOf(1, 2, 3).IsEmpty())

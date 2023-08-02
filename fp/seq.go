@@ -2,6 +2,7 @@ package fp
 
 type Seq[T any] interface {
 	Add(T) Seq[T]
+	Get(int) T
 	IsEmpty() bool
 	NonEmpty() bool
 	HeadOption() Option[T]

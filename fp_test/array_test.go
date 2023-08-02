@@ -16,6 +16,12 @@ func TestArrayAdd(t *testing.T) {
 	assert.True(t, fp.ArrayOf(1, 2).Add(3).Add(4).Equals(fp.ArrayOf(4, 3, 1, 2)))
 }
 
+func TestArrayGet(t *testing.T) {
+	assert.Equal(t, 1, fp.ArrayOf(1, 2, 3).Get(0))
+	assert.Equal(t, 2, fp.ArrayOf(1, 2, 3).Get(1))
+	assert.Equal(t, 3, fp.ArrayOf(1, 2, 3).Get(2))
+}
+
 func TestArrayIsEmpty(t *testing.T) {
 	assert.True(t, fp.ArrayOf[int]().IsEmpty())
 	assert.False(t, fp.ArrayOf(1, 2, 3).IsEmpty())

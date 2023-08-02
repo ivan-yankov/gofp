@@ -32,6 +32,20 @@ func (this List[T]) Add(e T) Seq[T] {
 	}
 }
 
+func (this List[T]) Get(i int) T {
+	if this.IsValidIndex(i) {
+		var it func(Seq[T], int) T
+		it = func(seq Seq[T], ind int) T {
+			if i == ind {
+				return seq.HeadOption().Get()
+			}
+			return it(seq.Tail(), ind+1)
+		}
+		return it(this, 0)
+	}
+	panic("Index " + fmt.Sprint(i) + " out of bounds " + fmt.Sprint(this.Size()))
+}
+
 func (this List[T]) IsEmpty() bool {
 	return this.Size() == 0
 }

@@ -14,6 +14,13 @@ func (this Array[T]) Add(e T) Seq[T] {
 	return ArrayOfGoSlice(append([]T{e}, this.data...))
 }
 
+func (this Array[T]) Get(i int) T {
+	if this.IsValidIndex(i) {
+		return this.data[i]
+	}
+	panic("Index " + fmt.Sprint(i) + " out of bounds " + fmt.Sprint(this.Size()))
+}
+
 func (this Array[T]) IsEmpty() bool {
 	return this.Size() == 0
 }
