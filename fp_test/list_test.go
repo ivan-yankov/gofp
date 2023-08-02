@@ -465,3 +465,7 @@ func TestListToGoSlice(t *testing.T) {
 	s := []int{1, 2, 3}
 	assert.Equal(t, s, fp.ListOf(1, 2, 3).ToGoSlice())
 }
+
+func TestListIsList(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().IsList())
+}

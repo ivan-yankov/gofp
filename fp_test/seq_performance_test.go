@@ -18,7 +18,7 @@ func BenchmarkListFindSlice(b *testing.B) {
 	la := fp.ListTabulate(na, func(i int) int { return i + 1 })
 	lb := fp.ListTabulate(nb, func(i int) int { return i + na - nb - 10 })
 	b.ResetTimer()
-	run(b, func() { fp.SeqFindSlice(la, lb, true) })
+	run(b, func() { fp.SeqFindSlice(la, lb) })
 }
 
 func BenchmarkArrayFindSlice(b *testing.B) {
@@ -27,5 +27,5 @@ func BenchmarkArrayFindSlice(b *testing.B) {
 	la := fp.ArrayTabulate(na, func(i int) int { return i + 1 })
 	lb := fp.ArrayTabulate(nb, func(i int) int { return i + na - nb - 10 })
 	b.ResetTimer()
-	run(b, func() { fp.SeqFindSlice(la, lb, false) })
+	run(b, func() { fp.SeqFindSlice(la, lb) })
 }

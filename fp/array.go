@@ -385,3 +385,7 @@ func (this Array[T]) ToArray() Array[T] {
 func (this Array[T]) ToGoSlice() []T {
 	return this.data
 }
+
+func (this Array[T]) IsList() bool {
+	return false
+}

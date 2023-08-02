@@ -299,7 +299,6 @@ func (this List[T]) MkString(sep string) string {
 	strings := SeqMap[T, string](
 		this,
 		func(x T) string { return fmt.Sprintf("%+v", x) },
-		true,
 	)
 	lastIndex := this.Size() - 1
 	f := func(i int, e string, acc string) string {
@@ -383,4 +382,8 @@ func (this List[T]) ToGoSlice() []T {
 		return it(seq.Tail(), append(acc, seq.HeadOption().Get()))
 	}
 	return it(this, make([]T, 0))
+}
+
+func (this List[T]) IsList() bool {
+	return true
 }

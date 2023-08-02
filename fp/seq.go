@@ -49,9 +49,10 @@ type Seq[T any] interface {
 	ToList() List[T]
 	ToArray() Array[T]
 	ToGoSlice() []T
+	IsList() bool
 }
 
-func SeqZip[A, B any](a Seq[A], b Seq[B], list bool) Seq[Pair[A, B]] {
+func SeqZip[A, B any](a Seq[A], b Seq[B]) Seq[Pair[A, B]] {
 	type T = Seq[Pair[A, B]]
 
 	var it func(Seq[A], Seq[B], T) T
@@ -62,11 +63,11 @@ func SeqZip[A, B any](a Seq[A], b Seq[B], list bool) Seq[Pair[A, B]] {
 		return it(sa.Tail(), sb.Tail(), acc.Append(PairOf(sa.HeadOption().Get(), sb.HeadOption().Get())))
 	}
 
-	return it(a, b, emptySeq[Pair[A, B]](list))
+	return it(a, b, emptySeq[Pair[A, B]](a.IsList()))
 }
 
-func SeqZipWithIndex[T any](seq Seq[T], list bool) Seq[Pair[T, int]] {
-	return SeqZip[T, int](seq, seq.Indexes(), list)
+func SeqZipWithIndex[T any](seq Seq[T]) Seq[Pair[T, int]] {
+	return SeqZip[T, int](seq, seq.Indexes())
 }
 
 func SeqFoldLeft[A, B any](seq Seq[A], f func(A, B) B, acc B) B {
@@ -93,11 +94,11 @@ func SeqFoldCount[A, B any](seq Seq[A], f func(int, A, B) B, acc B) B {
 	return fold(seq, f, acc, 0)
 }
 
-func SeqMap[A, B any](seq Seq[A], f func(A) B, list bool) Seq[B] {
-	return SeqReverseMap(seq, f, list).Reverse()
+func SeqMap[A, B any](seq Seq[A], f func(A) B) Seq[B] {
+	return SeqReverseMap(seq, f).Reverse()
 }
 
-func SeqReverseMap[A, B any](seq Seq[A], f func(A) B, list bool) Seq[B] {
+func SeqReverseMap[A, B any](seq Seq[A], f func(A) B) Seq[B] {
 	var it func(Seq[A], Seq[B]) Seq[B]
 	it = func(s Seq[A], acc Seq[B]) Seq[B] {
 		if s.IsEmpty() {
@@ -105,10 +106,10 @@ func SeqReverseMap[A, B any](seq Seq[A], f func(A) B, list bool) Seq[B] {
 		}
 		return it(s.Tail(), acc.Add(f(s.HeadOption().Get())))
 	}
-	return it(seq, emptySeq[B](list))
+	return it(seq, emptySeq[B](seq.IsList()))
 }
 
-func SeqFlatMap[A, B any](seq Seq[A], f func(A) Seq[B], list bool) Seq[B] {
+func SeqFlatMap[A, B any](seq Seq[A], f func(A) Seq[B]) Seq[B] {
 	var it func(Seq[A], Seq[B]) Seq[B]
 	it = func(s Seq[A], acc Seq[B]) Seq[B] {
 		if s.IsEmpty() {
@@ -116,12 +117,12 @@ func SeqFlatMap[A, B any](seq Seq[A], f func(A) Seq[B], list bool) Seq[B] {
 		}
 		return it(s.Tail(), acc.Concat(f(s.HeadOption().Get())))
 	}
-	return it(seq, emptySeq[B](list))
+	return it(seq, emptySeq[B](seq.IsList()))
 }
 
-func SeqSliding[T any](seq Seq[T], size int, step int, list bool) Seq[Seq[T]] {
+func SeqSliding[T any](seq Seq[T], size int, step int) Seq[Seq[T]] {
 	if size <= 0 || step <= 0 {
-		return emptySeq[Seq[T]](list)
+		return emptySeq[Seq[T]](seq.IsList())
 	}
 
 	var it func(Seq[T], Seq[Seq[T]]) Seq[Seq[T]]
@@ -134,28 +135,27 @@ func SeqSliding[T any](seq Seq[T], size int, step int, list bool) Seq[Seq[T]] {
 		}
 		return it(s.Drop(step), acc.Add(s.Take(size)))
 	}
-	return it(seq, emptySeq[Seq[T]](list)).Reverse()
+	return it(seq, emptySeq[Seq[T]](seq.IsList())).Reverse()
 }
 
-func SeqStartsWith[T any](a Seq[T], b Seq[T], list bool) bool {
-	return 0 == SeqFindSlice(a, b, list).GetOrElse(-1)
+func SeqStartsWith[T any](a Seq[T], b Seq[T]) bool {
+	return 0 == SeqFindSlice(a, b).GetOrElse(-1)
 }
 
-func SeqEndsWith[T any](a Seq[T], b Seq[T], list bool) bool {
-	return SeqStartsWith(a.Reverse(), b.Reverse(), list)
+func SeqEndsWith[T any](a Seq[T], b Seq[T]) bool {
+	return SeqStartsWith(a.Reverse(), b.Reverse())
 }
 
-func SeqFindSlice[T any](a Seq[T], b Seq[T], list bool) Option[int] {
+func SeqFindSlice[T any](a Seq[T], b Seq[T]) Option[int] {
 	if a.IsEmpty() || b.IsEmpty() || (a.Size() < b.Size()) {
 		return None[int]()
 	}
 
-	found := SeqSliding(SeqZipWithIndex(a, list), b.Size(), 1, list).Find(
+	found := SeqSliding(SeqZipWithIndex(a), b.Size(), 1).Find(
 		func(x Seq[Pair[T, int]]) bool {
 			return SeqMap(
 				x,
 				func(y Pair[T, int]) T { return y.GetA() },
-				list,
 			).Equals(b)
 		},
 	)

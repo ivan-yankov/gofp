@@ -466,3 +466,7 @@ func TestArrayToGoSlice(t *testing.T) {
 	s := []int{1, 2, 3}
 	assert.Equal(t, s, fp.ArrayOf(1, 2, 3).ToGoSlice())
 }
+
+func TestArrayIsList(t *testing.T) {
+	assert.False(t, fp.ArrayOf[int]().IsList())
+}
