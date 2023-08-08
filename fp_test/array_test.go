@@ -242,7 +242,7 @@ func TestArrayForAll(t *testing.T) {
 func TestArrayForEach(t *testing.T) {
 	var s = ""
 	f := func(x int) fp.Unit {
-		s = s + " " + fmt.Sprint(x)
+		s = s + fmt.Sprint(x)
 		return fp.GetUnit()
 	}
 
@@ -250,7 +250,23 @@ func TestArrayForEach(t *testing.T) {
 	assert.Equal(t, "", s)
 
 	fp.ArrayOf(1, 2, 3, 4, 5).ForEach(f)
-	assert.Equal(t, "1 2 3 4 5", strings.Trim(s, " "))
+	assert.Equal(t, "12345", s)
+}
+
+func TestArrayForEachPar(t *testing.T) {
+	var s = ""
+	f := func(x int) fp.Unit {
+		s = s + fmt.Sprint(x)
+		return fp.GetUnit()
+	}
+
+	fp.ArrayOf[int]().ForEach(f)
+	assert.Equal(t, "", s)
+
+	fp.ArrayOf(1, 2, 3, 4, 5).ForEachPar(f)
+	r := fp.ArrayOf(1, 2, 3, 4, 5).
+		ForAll(func(x int) bool { return strings.Contains(s, fmt.Sprint(x)) })
+	assert.True(t, r)
 }
 
 func TestArrayIndexes(t *testing.T) {

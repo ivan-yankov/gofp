@@ -1,0 +1,2 @@
+./clear-test-cache
+go test ./performance_test -bench .

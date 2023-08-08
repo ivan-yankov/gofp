@@ -1,2 +1,0 @@
-./clear-test-cache
-go test ./fp_test -bench .

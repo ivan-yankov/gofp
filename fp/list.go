@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
+	"sync"
 )
 
 type List[T any] struct {
@@ -195,8 +196,23 @@ func (this List[T]) ForAll(p func(T) bool) bool {
 }
 
 func (this List[T]) ForEach(f func(T) Unit) Unit {
-	fi := func(e T, acc Unit) Unit { f(e); return GetUnit() }
+	fi := func(e T, acc Unit) Unit { return f(e) }
 	return SeqFoldLeft[T, Unit](this, fi, GetUnit())
+}
+
+func (this List[T]) ForEachPar(f func(T) Unit) Unit {
+	var wg sync.WaitGroup
+	fi := func(e T, acc Unit) Unit {
+		wg.Add(1)
+		go func() Unit {
+			defer wg.Done()
+			return f(e)
+		}()
+		return GetUnit()
+	}
+	SeqFoldLeft[T, Unit](this, fi, GetUnit())
+	wg.Wait()
+	return GetUnit()
 }
 
 func (this List[T]) Indexes() Seq[int] {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
+	"sync"
 )
 
 type Array[T any] struct {
@@ -193,6 +194,19 @@ func (this Array[T]) ForEach(f func(T) Unit) Unit {
 	for i := 0; i < this.Size(); i++ {
 		f(this.data[i])
 	}
+	return GetUnit()
+}
+
+func (this Array[T]) ForEachPar(f func(T) Unit) Unit {
+	var wg sync.WaitGroup
+	for i := 0; i < this.Size(); i++ {
+		wg.Add(1)
+		go func(index int) Unit {
+			defer wg.Done()
+			return f(this.data[index])
+		}(i)
+	}
+	wg.Wait()
 	return GetUnit()
 }
 

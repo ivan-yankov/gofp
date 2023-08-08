@@ -241,7 +241,7 @@ func TestListForAll(t *testing.T) {
 func TestListForEach(t *testing.T) {
 	var s = ""
 	f := func(x int) fp.Unit {
-		s = s + " " + fmt.Sprint(x)
+		s = s + fmt.Sprint(x)
 		return fp.GetUnit()
 	}
 
@@ -249,7 +249,23 @@ func TestListForEach(t *testing.T) {
 	assert.Equal(t, "", s)
 
 	fp.ListOf(1, 2, 3, 4, 5).ForEach(f)
-	assert.Equal(t, "1 2 3 4 5", strings.Trim(s, " "))
+	assert.Equal(t, "12345", s)
+}
+
+func TestListForEachPar(t *testing.T) {
+	var s = ""
+	f := func(x int) fp.Unit {
+		s = s + fmt.Sprint(x)
+		return fp.GetUnit()
+	}
+
+	fp.ListOf[int]().ForEach(f)
+	assert.Equal(t, "", s)
+
+	fp.ListOf(1, 2, 3, 4, 5).ForEachPar(f)
+	r := fp.ListOf(1, 2, 3, 4, 5).
+		ForAll(func(x int) bool { return strings.Contains(s, fmt.Sprint(x)) })
+	assert.True(t, r)
 }
 
 func TestListIndexes(t *testing.T) {
