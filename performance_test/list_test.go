@@ -16,6 +16,15 @@ func BenchmarkListFindSlice(b *testing.B) {
 	run(b, func() { la.FindSlice(lb) })
 }
 
+func BenchmarkListSlidingSlice(b *testing.B) {
+	n := 10000
+	size := 100
+	step := 1
+	seq := fp.ListTabulate(n, func(i int) int { return i + 1 })
+	b.ResetTimer()
+	run(b, func() { fp.SeqSliding(seq, size, step) })
+}
+
 func BenchmarkListForEachPar(b *testing.B) {
 	n := 10
 	seq := fp.ListTabulate(n, func(i int) int { return i + 1 })
