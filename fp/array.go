@@ -325,6 +325,27 @@ func (this Array[T]) Slice(from int, until int) Seq[T] {
 	return ArrayOfGoSlice(this.data[lo:up])
 }
 
+func (this Array[T]) FindSlice(that Seq[T]) Option[int] {
+	if this.IsEmpty() || that.IsEmpty() || (this.Size() < that.Size()) {
+		return None[int]()
+	}
+
+	for i := 0; i < this.Size(); i++ {
+		if this.Slice(i, i+that.Size()).Equals(that) {
+			return SomeOf(i)
+		}
+	}
+	return None[int]()
+}
+
+func (this Array[T]) StartsWith(that Seq[T]) bool {
+	return 0 == this.FindSlice(that).GetOrElse(-1)
+}
+
+func (this Array[T]) EndsWith(that Seq[T]) bool {
+	return this.Reverse().StartsWith(that.Reverse())
+}
+
 func (this Array[T]) SplitAt(i int) Pair[Seq[T], Seq[T]] {
 	if this.IsEmpty() {
 		return PairOf(emptyArray[T](), emptyArray[T]())

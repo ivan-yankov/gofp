@@ -45,6 +45,9 @@ type Seq[T any] interface {
 	PrefixLength(func(T) bool) int
 	Reduce(func(T, T) T) Option[T]
 	Slice(int, int) Seq[T]
+	FindSlice(Seq[T]) Option[int]
+	StartsWith(Seq[T]) bool
+	EndsWith(Seq[T]) bool
 	SplitAt(int) Pair[Seq[T], Seq[T]]
 	Sort(func(T, T) bool) Seq[T]
 	ToList() List[T]
@@ -137,34 +140,4 @@ func SeqSliding[T any](seq Seq[T], size int, step int) Seq[Seq[T]] {
 		return it(s.Drop(step), acc.Add(s.Take(size)))
 	}
 	return it(seq, emptySeq[Seq[T]](seq.IsList())).Reverse()
-}
-
-func SeqStartsWith[T any](a Seq[T], b Seq[T]) bool {
-	return 0 == SeqFindSlice(a, b).GetOrElse(-1)
-}
-
-func SeqEndsWith[T any](a Seq[T], b Seq[T]) bool {
-	return SeqStartsWith(a.Reverse(), b.Reverse())
-}
-
-func SeqFindSlice[T any](a Seq[T], b Seq[T]) Option[int] {
-	if a.IsEmpty() || b.IsEmpty() || (a.Size() < b.Size()) {
-		return None[int]()
-	}
-
-	found := SeqSliding(SeqZipWithIndex(a), b.Size(), 1).Find(
-		func(x Seq[Pair[T, int]]) bool {
-			return SeqMap(
-				x,
-				func(y Pair[T, int]) T { return y.GetA() },
-			).Equals(b)
-		},
-	)
-
-	return OptionMap(
-		found,
-		func(x Seq[Pair[T, int]]) int {
-			return x.HeadOption().Get().GetB()
-		},
-	)
 }

@@ -454,6 +454,41 @@ func TestArraySlice(t *testing.T) {
 	assert.True(t, fp.ArrayOf(1, 2, 3, 4, 5).Slice(2, 9).Equals(fp.ArrayOf(3, 4, 5)))
 }
 
+func TestArrayFindSlice(t *testing.T) {
+	assert.True(t, fp.ArrayOf[int]().FindSlice(fp.ArrayOf[int]()).NonDefined())
+	assert.True(t, fp.ArrayOf(1).FindSlice(fp.ArrayOf[int]()).NonDefined())
+	assert.True(t, fp.ArrayOf[int]().FindSlice(fp.ArrayOf(1)).NonDefined())
+	assert.True(t, fp.ArrayOf(1, 2, 3).FindSlice(fp.ArrayOf(1, 2, 3, 4, 5)).NonDefined())
+
+	assert.Equal(t, 0, fp.ArrayOf(1, 2, 3, 4, 5).FindSlice(fp.ArrayOf(1, 2, 3, 4, 5)).GetOrElse(-1))
+	assert.Equal(t, 3, fp.ArrayOf(1, 2, 3, 4, 5).FindSlice(fp.ArrayOf(4, 5)).GetOrElse(-1))
+	assert.Equal(t, 2, fp.ArrayOf(1, 2, 3, 4, 5).FindSlice(fp.ArrayOf(3, 4, 5)).GetOrElse(-1))
+}
+
+func TestArrayStartsWith(t *testing.T) {
+	assert.False(t, fp.ArrayOf[int]().StartsWith(fp.ArrayOf[int]()))
+	assert.False(t, fp.ArrayOf[int]().StartsWith(fp.ArrayOf(1)))
+	assert.False(t, fp.ArrayOf(1).StartsWith(fp.ArrayOf[int]()))
+	assert.True(t, fp.ArrayOf(1).StartsWith(fp.ArrayOf(1)))
+	assert.True(t, fp.ArrayOf(1, 2, 3).StartsWith(fp.ArrayOf(1, 2, 3)))
+	assert.True(t, fp.ArrayOf(1, 2, 3, 4, 5).StartsWith(fp.ArrayOf(1, 2, 3)))
+	assert.False(t, fp.ArrayOf(1, 2, 3, 4, 5).StartsWith(fp.ArrayOf(4, 5, 6)))
+	assert.False(t, fp.ArrayOf(1, 2, 3).StartsWith(fp.ArrayOf(1, 2, 3, 4, 5)))
+}
+
+func TestArrayEndsWith(t *testing.T) {
+	assert.False(t, fp.ArrayOf[int]().EndsWith(fp.ArrayOf[int]()))
+	assert.False(t, fp.ArrayOf[int]().EndsWith(fp.ArrayOf(1)))
+	assert.False(t, fp.ArrayOf(1).EndsWith(fp.ArrayOf[int]()))
+	assert.True(t, fp.ArrayOf(1).EndsWith(fp.ArrayOf(1)))
+	assert.True(t, fp.ArrayOf(1, 2, 3).EndsWith(fp.ArrayOf(1, 2, 3)))
+	assert.False(t, fp.ArrayOf(1, 2, 3, 4, 5).EndsWith(fp.ArrayOf(4, 5, 6)))
+	assert.False(t, fp.ArrayOf(1, 2, 3).EndsWith(fp.ArrayOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ArrayOf(1, 2, 3, 4, 5).EndsWith(fp.ArrayOf(3, 4, 5)))
+	assert.False(t, fp.ArrayOf(1, 2, 3, 4, 5).EndsWith(fp.ArrayOf(1, 2, 3, 4, 5, 6)))
+	assert.False(t, fp.ArrayOf(1, 2, 3, 4, 5).EndsWith(fp.ArrayOf(6, 1, 2, 3, 4, 5)))
+}
+
 func TestArraySplitAt(t *testing.T) {
 	assert.Equal(t, fp.PairOf(fp.ArrayOf[int](), fp.ArrayOf[int]()), fp.ArrayOf[int]().SplitAt(0))
 	assert.Equal(t, fp.PairOf(fp.ArrayOf(1, 2, 3), fp.ArrayOf[int]()), fp.ArrayOf(1, 2, 3).SplitAt(-1))

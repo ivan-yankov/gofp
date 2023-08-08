@@ -453,6 +453,44 @@ func TestListSlice(t *testing.T) {
 	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Slice(2, 9).Equals(fp.ListOf(3, 4, 5)))
 }
 
+func TestListFindSlice(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().FindSlice(fp.ListOf[int]()).NonDefined())
+	assert.True(t, fp.ListOf(1).FindSlice(fp.ListOf[int]()).NonDefined())
+	assert.True(t, fp.ListOf[int]().FindSlice(fp.ListOf(1)).NonDefined())
+	assert.True(t, fp.ListOf(1, 2, 3).FindSlice(fp.ListOf(1, 2, 3, 4, 5)).NonDefined())
+
+	assert.Equal(t, 0, fp.ListOf(1, 2, 3, 4, 5).FindSlice(fp.ListOf(1, 2, 3, 4, 5)).GetOrElse(-1))
+	assert.Equal(t, 3, fp.ListOf(1, 2, 3, 4, 5).FindSlice(fp.ListOf(4, 5)).GetOrElse(-1))
+	assert.Equal(t, 2, fp.ListOf(1, 2, 3, 4, 5).FindSlice(fp.ListOf(3, 4, 5)).GetOrElse(-1))
+
+	assert.Equal(t, -1, fp.ListOf(1, 2, 3, 4, 5).FindSlice(fp.ListOf(4, 5, 6)).GetOrElse(-1))
+	assert.Equal(t, -1, fp.ListOf(1, 2, 3).FindSlice(fp.ListOf(1, 2, 3, 4, 5)).GetOrElse(-1))
+}
+
+func TestListStartsWith(t *testing.T) {
+	assert.False(t, fp.ListOf[int]().StartsWith(fp.ListOf[int]()))
+	assert.False(t, fp.ListOf[int]().StartsWith(fp.ListOf(1)))
+	assert.False(t, fp.ListOf(1).StartsWith(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).StartsWith(fp.ListOf(1)))
+	assert.True(t, fp.ListOf(1, 2, 3).StartsWith(fp.ListOf(1, 2, 3)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).StartsWith(fp.ListOf(1, 2, 3)))
+	assert.False(t, fp.ListOf(1, 2, 3, 4, 5).StartsWith(fp.ListOf(4, 5, 6)))
+	assert.False(t, fp.ListOf(1, 2, 3).StartsWith(fp.ListOf(1, 2, 3, 4, 5)))
+}
+
+func TestListEndsWith(t *testing.T) {
+	assert.False(t, fp.ListOf[int]().EndsWith(fp.ListOf[int]()))
+	assert.False(t, fp.ListOf[int]().EndsWith(fp.ListOf(1)))
+	assert.False(t, fp.ListOf(1).EndsWith(fp.ListOf[int]()))
+	assert.True(t, fp.ListOf(1).EndsWith(fp.ListOf(1)))
+	assert.True(t, fp.ListOf(1, 2, 3).EndsWith(fp.ListOf(1, 2, 3)))
+	assert.False(t, fp.ListOf(1, 2, 3, 4, 5).EndsWith(fp.ListOf(4, 5, 6)))
+	assert.False(t, fp.ListOf(1, 2, 3).EndsWith(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).EndsWith(fp.ListOf(3, 4, 5)))
+	assert.False(t, fp.ListOf(1, 2, 3, 4, 5).EndsWith(fp.ListOf(1, 2, 3, 4, 5, 6)))
+	assert.False(t, fp.ListOf(1, 2, 3, 4, 5).EndsWith(fp.ListOf(6, 1, 2, 3, 4, 5)))
+}
+
 func TestListSplitAt(t *testing.T) {
 	assert.Equal(t, fp.PairOf(fp.ListOf[int](), fp.ListOf[int]()), fp.ListOf[int]().SplitAt(0))
 	assert.Equal(t, fp.PairOf(fp.ListOf(1, 2, 3), fp.ListOf[int]()), fp.ListOf(1, 2, 3).SplitAt(-1))

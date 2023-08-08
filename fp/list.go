@@ -332,6 +332,34 @@ func (this List[T]) Slice(from int, until int) Seq[T] {
 	return this.Drop(lo).Take(until - lo)
 }
 
+func (this List[T]) FindSlice(that Seq[T]) Option[int] {
+	if this.IsEmpty() || that.IsEmpty() || (this.Size() < that.Size()) {
+		return None[int]()
+	}
+
+	var it func(Seq[T], int, Option[int]) Option[int]
+	it = func(seq Seq[T], i int, acc Option[int]) Option[int] {
+		if acc.IsDefined() || seq.IsEmpty() {
+			return acc
+		} else if seq.Take(that.Size()).Equals(that) {
+			return SomeOf(i)
+		}
+		return it(seq.Tail(), i+1, acc)
+	}
+	return it(this, 0, None[int]())
+}
+
+func (this List[T]) StartsWith(that Seq[T]) bool {
+	if this.IsEmpty() || that.IsEmpty() || (this.Size() < that.Size()) {
+		return false
+	}
+	return this.Take(that.Size()).Equals(that)
+}
+
+func (this List[T]) EndsWith(that Seq[T]) bool {
+	return this.Reverse().StartsWith(that.Reverse())
+}
+
 func (this List[T]) SplitAt(i int) Pair[Seq[T], Seq[T]] {
 	if this.IsEmpty() {
 		return PairOf(emptyList[T](), emptyList[T]())
