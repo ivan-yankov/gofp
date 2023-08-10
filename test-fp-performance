@@ -1,2 +1,3 @@
 ./clear-test-cache
-go test ./performance_test -bench .
+go test ./performance_test -bench . | \
+awk '/^Benchmark/ { printf "%50s %20.10f s/op\n", $1, $3/1000000000 }'
