@@ -239,6 +239,14 @@ func TestArrayForAll(t *testing.T) {
 	assert.False(t, fp.ArrayOf[int](0, 1, 2).ForAll(func(x int) bool { return x > 0 }))
 }
 
+func TestArrayForAllPar(t *testing.T) {
+	assert.True(t, fp.ArrayOf[int]().ForAllPar(func(x int) bool { return x == 0 }))
+	assert.True(t, fp.ArrayOf(1).ForAllPar(func(x int) bool { return x == 1 }))
+	assert.False(t, fp.ArrayOf(1).ForAllPar(func(x int) bool { return x == 0 }))
+	assert.True(t, fp.ArrayOf[int](1, 2, 3).ForAllPar(func(x int) bool { return x > 0 }))
+	assert.False(t, fp.ArrayOf[int](0, 1, 2).ForAllPar(func(x int) bool { return x > 0 }))
+}
+
 func TestArrayForEach(t *testing.T) {
 	var s = ""
 	f := func(x int) fp.Unit {

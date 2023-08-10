@@ -195,6 +195,33 @@ func (this List[T]) ForAll(p func(T) bool) bool {
 	return SeqFoldLeft[T, bool](this, f, true)
 }
 
+func (this List[T]) ForAllPar(p func(T) bool) bool {
+	var wg sync.WaitGroup
+	ch := make(chan bool)
+	f := func(e T, _ Unit) Unit {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			ch <- p(e)
+		}()
+		return GetUnit()
+	}
+
+	SeqFoldLeft[T, Unit](this, f, GetUnit())
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	acc := true
+	for r := range ch {
+		acc = acc && r
+	}
+
+	return acc
+}
+
 func (this List[T]) ForEach(f func(T) Unit) Unit {
 	fi := func(e T, acc Unit) Unit { return f(e) }
 	return SeqFoldLeft[T, Unit](this, fi, GetUnit())

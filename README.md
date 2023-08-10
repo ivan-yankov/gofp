@@ -25,7 +25,6 @@ Methods that cause `Instantiation cycle` error are implemented as functions.
 - Parallel sequence operations
     - map
     - flatMap
-    - forAll
 
 - Sequence operations
     - GroupBy

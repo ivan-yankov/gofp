@@ -190,6 +190,30 @@ func (this Array[T]) ForAll(p func(T) bool) bool {
 	return true
 }
 
+func (this Array[T]) ForAllPar(p func(T) bool) bool {
+	var wg sync.WaitGroup
+	ch := make(chan bool)
+	for i := 0; i < this.Size(); i++ {
+		wg.Add(1)
+		go func(index int) {
+			defer wg.Done()
+			ch <- p(this.data[index])
+		}(i)
+	}
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	acc := true
+	for r := range ch {
+		acc = acc && r
+	}
+
+	return acc
+}
+
 func (this Array[T]) ForEach(f func(T) Unit) Unit {
 	for i := 0; i < this.Size(); i++ {
 		f(this.data[i])

@@ -238,6 +238,14 @@ func TestListForAll(t *testing.T) {
 	assert.False(t, fp.ListOf[int](0, 1, 2).ForAll(func(x int) bool { return x > 0 }))
 }
 
+func TestListForAllPar(t *testing.T) {
+	assert.True(t, fp.ListOf[int]().ForAllPar(func(x int) bool { return x == 0 }))
+	assert.True(t, fp.ListOf(1).ForAllPar(func(x int) bool { return x == 1 }))
+	assert.False(t, fp.ListOf(1).ForAllPar(func(x int) bool { return x == 0 }))
+	assert.True(t, fp.ListOf[int](1, 2, 3).ForAllPar(func(x int) bool { return x > 0 }))
+	assert.False(t, fp.ListOf[int](0, 1, 2).ForAllPar(func(x int) bool { return x > 0 }))
+}
+
 func TestListForEach(t *testing.T) {
 	var s = ""
 	f := func(x int) fp.Unit {
