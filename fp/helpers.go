@@ -122,3 +122,9 @@ func reduce[T any](seq Seq[T], f func(T, T) T) Option[T] {
 	r := SeqFoldLeft[T, T](seq.Tail(), f, seq.HeadOption().Get())
 	return SomeOf(r)
 }
+
+func copyGoSlice[T any](x []T) []T {
+	new := make([]T, len(x))
+	copy(new, x)
+	return new
+}

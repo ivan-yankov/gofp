@@ -499,10 +499,12 @@ func TestArraySplitAt(t *testing.T) {
 
 func TestArraySort(t *testing.T) {
 	f := func(x int, y int) bool { return x < y }
+	unsorted := fp.ArrayOf(3, 2, 1, 4, 5)
 	assert.True(t, fp.ArrayOf[int]().Sort(f).IsEmpty())
 	assert.True(t, fp.ArrayOf(1).Sort(f).Equals(fp.ArrayOf(1)))
 	assert.True(t, fp.ArrayOf(1, 2, 3, 4, 5).Sort(f).Equals(fp.ArrayOf(1, 2, 3, 4, 5)))
-	assert.True(t, fp.ArrayOf(3, 2, 1, 4, 5).Sort(f).Equals(fp.ArrayOf(1, 2, 3, 4, 5)))
+	assert.True(t, unsorted.Sort(f).Equals(fp.ArrayOf(1, 2, 3, 4, 5)))
+	assert.Equal(t, fp.ArrayOf(3, 2, 1, 4, 5), unsorted)
 }
 
 func TestArrayToList(t *testing.T) {

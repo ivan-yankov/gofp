@@ -357,7 +357,7 @@ func (this Array[T]) SplitAt(i int) Pair[Seq[T], Seq[T]] {
 }
 
 func (this Array[T]) Sort(less func(T, T) bool) Seq[T] {
-	s := this.ToGoSlice()
+	s := copyGoSlice(this.ToGoSlice())
 	sort.Slice(
 		s,
 		func(i int, j int) bool { return less(s[i], s[j]) },

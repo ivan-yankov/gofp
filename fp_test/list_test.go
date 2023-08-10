@@ -501,10 +501,12 @@ func TestListSplitAt(t *testing.T) {
 
 func TestListSort(t *testing.T) {
 	f := func(x int, y int) bool { return x < y }
+	unsorted := fp.ListOf(3, 2, 1, 4, 5)
 	assert.True(t, fp.ListOf[int]().Sort(f).IsEmpty())
 	assert.True(t, fp.ListOf(1).Sort(f).Equals(fp.ListOf(1)))
 	assert.True(t, fp.ListOf(1, 2, 3, 4, 5).Sort(f).Equals(fp.ListOf(1, 2, 3, 4, 5)))
-	assert.True(t, fp.ListOf(3, 2, 1, 4, 5).Sort(f).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.True(t, unsorted.Sort(f).Equals(fp.ListOf(1, 2, 3, 4, 5)))
+	assert.Equal(t, fp.ListOf(3, 2, 1, 4, 5), unsorted)
 }
 
 func TestListToList(t *testing.T) {
