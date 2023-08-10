@@ -16,7 +16,7 @@ func BenchmarkArrayFindSlice(b *testing.B) {
 	run(b, func() { la.FindSlice(lb) })
 }
 
-func BenchmarkArraySlidingSlice(b *testing.B) {
+func BenchmarkArraySliding(b *testing.B) {
 	n := 10000
 	size := 100
 	step := 1

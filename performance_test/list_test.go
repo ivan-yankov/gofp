@@ -16,7 +16,7 @@ func BenchmarkListFindSlice(b *testing.B) {
 	run(b, func() { la.FindSlice(lb) })
 }
 
-func BenchmarkListSlidingSlice(b *testing.B) {
+func BenchmarkListSliding(b *testing.B) {
 	n := 10000
 	size := 100
 	step := 1
