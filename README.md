@@ -22,10 +22,6 @@ Methods that cause `Instantiation cycle` error are implemented as functions.
 
 ## Future work
 
-- Parallel sequence operations
-    - map
-    - flatMap
-
 - Sequence operations
     - GroupBy
 
@@ -33,5 +29,6 @@ Group the sequence to `Seq[Pair[K, Seq[T]]]` based on a given function for creat
 
 - Structures
     - Map
+    - SortedMap
     - LazyList
     - LazyArray

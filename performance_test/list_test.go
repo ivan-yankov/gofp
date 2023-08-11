@@ -67,3 +67,18 @@ func BenchmarkListMapPar(b *testing.B) {
 		)
 	})
 }
+
+func BenchmarkListFlatMapPar(b *testing.B) {
+	n := 10
+	seq := fp.ListTabulate(n, func(i int) int { return i + 1 })
+	b.ResetTimer()
+	run(b, func() {
+		fp.SeqFlatMapPar(
+			seq,
+			func(int) fp.Seq[bool] {
+				time.Sleep(time.Second)
+				return fp.ListOf(true)
+			},
+		)
+	})
+}

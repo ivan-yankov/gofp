@@ -107,13 +107,13 @@ func SeqMap[A, B any](seq Seq[A], f func(A) B) Seq[B] {
 
 func SeqMapPar[A, B any](seq Seq[A], f func(A) B) Seq[B] {
 	var wg sync.WaitGroup
-	ch := make(chan B)
+	ch := make(chan Pair[int, B])
 	s := seq.ToGoSlice()
 	for i := 0; i < len(s); i++ {
 		wg.Add(1)
 		go func(index int) {
 			defer wg.Done()
-			ch <- f(s[index])
+			ch <- PairOf(index, f(s[index]))
 		}(i)
 	}
 
@@ -122,9 +122,9 @@ func SeqMapPar[A, B any](seq Seq[A], f func(A) B) Seq[B] {
 		close(ch)
 	}()
 
-	result := []B{}
-	for e := range ch {
-		result = append(result, e)
+	result := make([]B, len(s))
+	for x := range ch {
+		result[x.GetA()] = x.GetB()
 	}
 
 	if seq.IsList() {
@@ -153,6 +153,39 @@ func SeqFlatMap[A, B any](seq Seq[A], f func(A) Seq[B]) Seq[B] {
 		return it(s.Tail(), acc.Concat(f(s.HeadOption().Get())))
 	}
 	return it(seq, emptySeq[B](seq.IsList()))
+}
+
+func SeqFlatMapPar[A, B any](seq Seq[A], f func(A) Seq[B]) Seq[B] {
+	var wg sync.WaitGroup
+	ch := make(chan Pair[int, Seq[B]])
+	s := seq.ToGoSlice()
+	for i := 0; i < len(s); i++ {
+		wg.Add(1)
+		go func(index int) {
+			defer wg.Done()
+			ch <- PairOf(index, f(s[index]))
+		}(i)
+	}
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	result := make([]Seq[B], len(s))
+	for x := range ch {
+		result[x.GetA()] = x.GetB()
+	}
+
+	flat := []B{}
+	for i := 0; i < len(result); i++ {
+		flat = append(flat, result[i].ToGoSlice()...)
+	}
+
+	if seq.IsList() {
+		return ListOfGoSlice(flat)
+	}
+	return ArrayOfGoSlice(flat)
 }
 
 func SeqSliding[T any](seq Seq[T], size int, step int) Seq[Seq[T]] {

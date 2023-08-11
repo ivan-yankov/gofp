@@ -99,6 +99,16 @@ func TestSeqFlatMap(t *testing.T) {
 	assert.True(t, fp.SeqFlatMap(fp.ListOf(1, 2, 3), f).Equals(fp.ListOf("result", "r1", "result", "r2", "result", "r3")))
 }
 
+func TestSeqFlatMapPar(t *testing.T) {
+	f := func(x int) fp.Seq[string] {
+		return fp.ListOf("result", "r"+fmt.Sprint(x))
+	}
+
+	assert.True(t, fp.SeqFlatMapPar(fp.ListOf[int](), f).IsEmpty())
+	assert.True(t, fp.SeqFlatMapPar(fp.ListOf(1), f).Equals(fp.ListOf("result", "r1")))
+	assert.True(t, fp.SeqFlatMapPar(fp.ListOf(1, 2, 3), f).Equals(fp.ListOf("result", "r1", "result", "r2", "result", "r3")))
+}
+
 func TestSeqSliding(t *testing.T) {
 	assert.True(t, fp.SeqSliding(fp.ListOf[int](), 0, 0).IsEmpty())
 	assert.True(t, fp.SeqSliding(fp.ListOf[int](), 0, 1).IsEmpty())
