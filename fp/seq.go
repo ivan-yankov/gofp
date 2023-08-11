@@ -1,5 +1,7 @@
 package fp
 
+import "sync"
+
 type Seq[T any] interface {
 	Add(T) Seq[T]
 	Get(int) T
@@ -101,6 +103,34 @@ func SeqFoldCount[A, B any](seq Seq[A], f func(int, A, B) B, acc B) B {
 
 func SeqMap[A, B any](seq Seq[A], f func(A) B) Seq[B] {
 	return SeqReverseMap(seq, f).Reverse()
+}
+
+func SeqMapPar[A, B any](seq Seq[A], f func(A) B) Seq[B] {
+	var wg sync.WaitGroup
+	ch := make(chan B)
+	s := seq.ToGoSlice()
+	for i := 0; i < len(s); i++ {
+		wg.Add(1)
+		go func(index int) {
+			defer wg.Done()
+			ch <- f(s[index])
+		}(i)
+	}
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	result := []B{}
+	for e := range ch {
+		result = append(result, e)
+	}
+
+	if seq.IsList() {
+		return ListOfGoSlice(result)
+	}
+	return ArrayOfGoSlice(result)
 }
 
 func SeqReverseMap[A, B any](seq Seq[A], f func(A) B) Seq[B] {

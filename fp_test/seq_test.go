@@ -59,6 +59,16 @@ func TestSeqFoldCount(t *testing.T) {
 	assert.Equal(t, "[0,1][1,2][2,3][3,4][4,5]", fp.SeqFoldCount(fp.ListOf(1, 2, 3, 4, 5), f, ""))
 }
 
+func TestSeqMapPar(t *testing.T) {
+	f := func(x int) string {
+		return "r" + fmt.Sprint(x)
+	}
+
+	assert.True(t, fp.SeqMapPar(fp.ListOf[int](), f).IsEmpty())
+	assert.True(t, fp.SeqMapPar(fp.ListOf(1), f).Equals(fp.ListOf("r1")))
+	assert.True(t, fp.SeqMapPar(fp.ListOf(1, 2, 3), f).Equals(fp.ListOf("r1", "r2", "r3")))
+}
+
 func TestSeqMap(t *testing.T) {
 	f := func(x int) string {
 		return "r" + fmt.Sprint(x)

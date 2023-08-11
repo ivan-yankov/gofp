@@ -52,3 +52,18 @@ func BenchmarkArrayForAllPar(b *testing.B) {
 		)
 	})
 }
+
+func BenchmarkArrayMapPar(b *testing.B) {
+	n := 10
+	seq := fp.ArrayTabulate(n, func(i int) int { return i + 1 })
+	b.ResetTimer()
+	run(b, func() {
+		fp.SeqMapPar(
+			seq,
+			func(int) bool {
+				time.Sleep(time.Second)
+				return true
+			},
+		)
+	})
+}
