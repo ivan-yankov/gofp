@@ -28,7 +28,5 @@ Methods that cause `Instantiation cycle` error are implemented as functions.
 Group the sequence to `Seq[Pair[K, Seq[T]]]` based on a given function for creating keys.
 
 - Structures
-    - Map
-    - SortedMap
     - LazyList
     - LazyArray
