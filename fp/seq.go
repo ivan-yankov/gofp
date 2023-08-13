@@ -212,3 +212,16 @@ func SeqSetEquals[T any](sa Seq[T], sb Seq[T]) bool {
 	}
 	return sa.ForAll(func(x T) bool { return sb.ContainsElement(x) })
 }
+
+func SeqGroup[K, T any](seq Seq[T], produceKey func(T) K) IMap[K, Seq[T]] {
+	type R = IMap[K, Seq[T]]
+	return SeqFoldLeft(
+		seq,
+		func(e T, acc R) R {
+			key := produceKey(e)
+			newSeq := acc.GetOrElse(key, emptySeq[T](seq.IsList())).Append(e)
+			return acc.Put(key, newSeq)
+		},
+		MapOf[K, Seq[T]](),
+	)
+}

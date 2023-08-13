@@ -145,3 +145,24 @@ func TestSeqSetEquals(t *testing.T) {
 	assert.True(t, fp.SeqSetEquals(fp.ListOf[int](1, 2, 3), fp.ListOf[int](2, 3, 1)))
 	assert.False(t, fp.SeqSetEquals(fp.ListOf[int](1, 2, 3), fp.ListOf[int](1, 2, 3, 4)))
 }
+
+func TestSeqGroup(t *testing.T) {
+	f := func(x int) bool { return x%2 == 0 }
+
+	assert.True(
+		t,
+		fp.SeqGroup(fp.ListOf[int](), f).
+			Equals(fp.MapOf[bool, fp.Seq[int]]()),
+	)
+
+	assert.True(
+		t,
+		fp.SeqGroup(fp.ListOf(1, 2, 3, 4, 5, 6), f).
+			Equals(
+				fp.MapOf[bool, fp.Seq[int]](
+					fp.PairOf(true, fp.ListOf(2, 4, 6)),
+					fp.PairOf(false, fp.ListOf(1, 3, 5)),
+				),
+			),
+	)
+}
