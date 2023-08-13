@@ -223,7 +223,6 @@ func TestArrayTakeRight(t *testing.T) {
 func TestArrayTakeWhile(t *testing.T) {
 	assert.True(t, fp.ArrayOf[int]().TakeWhile(func(x int) bool { return x > 0 }).Equals(fp.ArrayOf[int]()))
 	assert.True(t, fp.ArrayOf(1).TakeWhile(func(x int) bool { return x > 0 }).Equals(fp.ArrayOf(1)))
-	assert.Equal(t, fp.ArrayOf(1), fp.ArrayOf(1).TakeWhile(func(x int) bool { return x > 0 }))
 	assert.True(t, fp.ArrayOf(1, 2, 3, 4, 5).TakeWhile(func(x int) bool { return x > 0 }).Equals(fp.ArrayOf(1, 2, 3, 4, 5)))
 	assert.True(t, fp.ArrayOf(1, 2, 3, 4, 5).TakeWhile(func(x int) bool { return x < 0 }).Equals(fp.ArrayOf[int]()))
 	assert.True(t, fp.ArrayOf(-1, -2, 3, 4, 5).TakeWhile(func(x int) bool { return x < 0 }).Equals(fp.ArrayOf(-1, -2)))

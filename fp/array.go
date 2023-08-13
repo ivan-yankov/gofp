@@ -165,17 +165,19 @@ func (this Array[T]) TakeRight(n int) Seq[T] {
 }
 
 func (this Array[T]) TakeWhile(p func(T) bool) Seq[T] {
-	index := -1
-	for i := 0; i < this.Size(); i++ {
-		if p(this.data[i]) {
-			index = i
-		} else {
-			break
+	findIndex := func() int {
+		for i := 0; i < this.Size(); i++ {
+			if !p(this.data[i]) {
+				return i - 1
+			}
 		}
+		return -2
 	}
 
-	if index < 0 {
-		return emptyArray[T]()
+	index := findIndex()
+
+	if index == -2 {
+		return this
 	}
 
 	return ArrayOfGoSlice(this.data[:index+1])
