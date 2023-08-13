@@ -136,3 +136,12 @@ func TestSeqSliding(t *testing.T) {
 	assert.True(t, fp.SeqSliding(fp.ListOf(1, 2, 3, 4, 5, 6), 3, 3).Equals(fp.ListOf(fp.ListOf(1, 2, 3), fp.ListOf(4, 5, 6))))
 	assert.True(t, fp.SeqSliding(fp.ListOf(1, 2, 3, 4, 5, 6, 7), 3, 3).Equals(fp.ListOf(fp.ListOf(1, 2, 3), fp.ListOf(4, 5, 6), fp.ListOf(7))))
 }
+
+func TestSeqSetEquals(t *testing.T) {
+	assert.True(t, fp.SeqSetEquals(fp.ListOf[int](), fp.ListOf[int]()))
+	assert.True(t, fp.SeqSetEquals(fp.ListOf[int](1), fp.ListOf[int](1)))
+	assert.True(t, fp.SeqSetEquals(fp.ListOf[int](1, 2, 3), fp.ListOf[int](1, 2, 3)))
+	assert.True(t, fp.SeqSetEquals(fp.ListOf[int](1, 2, 3), fp.ListOf[int](3, 2, 1)))
+	assert.True(t, fp.SeqSetEquals(fp.ListOf[int](1, 2, 3), fp.ListOf[int](2, 3, 1)))
+	assert.False(t, fp.SeqSetEquals(fp.ListOf[int](1, 2, 3), fp.ListOf[int](1, 2, 3, 4)))
+}

@@ -2,8 +2,7 @@ package fp
 
 import "reflect"
 
-type IMap[K comparable, V any] interface {
-	getData() map[K]V
+type IMap[K, V any] interface {
 	Put(K, V) IMap[K, V]
 	PutAll(IMap[K, V]) IMap[K, V]
 	Equals(IMap[K, V]) bool
@@ -20,50 +19,41 @@ type IMap[K comparable, V any] interface {
 	Values() Seq[V]
 }
 
-type iMap[K comparable, V any] struct {
-	data map[K]V
+type iMap[K, V any] struct {
+	data Seq[Pair[K, V]]
 }
 
-func mapCopy[K comparable, V any](m map[K]V) map[K]V {
-	result := make(map[K]V)
-	for k, v := range m {
-		result[k] = v
-	}
-	return result
+func MapOf[K, V any](items ...Pair[K, V]) IMap[K, V] {
+	return iMap[K, V]{ArrayOfGoSlice(items)}
 }
 
-func EmptyMap[K comparable, V any]() IMap[K, V] {
-	return iMap[K, V]{make(map[K]V)}
+func MapOfGoSlice[K, V any](items []Pair[K, V]) IMap[K, V] {
+	return iMap[K, V]{ArrayOfGoSlice(items)}
 }
 
-func MapOf[K comparable, V any](m map[K]V) IMap[K, V] {
-	return iMap[K, V]{m}
-}
-
-func (this iMap[K, V]) getData() map[K]V {
-	return mapCopy(this.data)
+func MapOfSeq[K, V any](seq Seq[Pair[K, V]]) IMap[K, V] {
+	return iMap[K, V]{seq}
 }
 
 func (this iMap[K, V]) Put(key K, value V) IMap[K, V] {
-	result := this.getData()
-	result[key] = value
-	return MapOf(result)
+	return MapOfSeq(this.Remove(key).Entries().Add(PairOf(key, value)))
 }
 
 func (this iMap[K, V]) PutAll(that IMap[K, V]) IMap[K, V] {
-	result := this.getData()
-	for k, v := range that.getData() {
-		result[k] = v
-	}
-	return MapOf(result)
+	thatKeys := that.Keys()
+	return MapOfSeq(
+		this.Entries().
+			FilterNot(func(x Pair[K, V]) bool { return thatKeys.ContainsElement(x.GetA()) }).
+			Concat(that.Entries()),
+	)
 }
 
 func (this iMap[K, V]) Equals(that IMap[K, V]) bool {
-	return reflect.DeepEqual(this, that)
+	return SeqSetEquals(this.Entries(), that.Entries())
 }
 
 func (this iMap[K, V]) Size() int {
-	return len(this.data)
+	return this.data.Size()
 }
 
 func (this iMap[K, V]) IsEmpty() bool {
@@ -75,43 +65,36 @@ func (this iMap[K, V]) NonEmpty() bool {
 }
 
 func (this iMap[K, V]) Get(key K) Option[V] {
-	v, exists := this.data[key]
-	if exists {
-		return SomeOf(v)
-	}
-	return None[V]()
+	return OptionMap(
+		this.Entries().
+			Find(func(x Pair[K, V]) bool { return reflect.DeepEqual(x.GetA(), key) }),
+		func(x Pair[K, V]) V { return x.GetB() },
+	)
 }
 
 func (this iMap[K, V]) GetOrElse(key K, defaultValue V) V {
-	v, exists := this.data[key]
-	if exists {
-		return v
-	}
-	return defaultValue
+	return this.Get(key).GetOrElse(defaultValue)
 }
 
 func (this iMap[K, V]) Remove(key K) IMap[K, V] {
-	result := this.getData()
-	delete(result, key)
-	return MapOf(result)
+	return MapOfSeq(
+		this.Entries().
+			FilterNot(func(x Pair[K, V]) bool { return reflect.DeepEqual(x.GetA(), key) }),
+	)
 }
 
 func (this iMap[K, V]) ContainsKey(key K) bool {
-	_, result := this.data[key]
-	return result
+	return this.Entries().
+		Exists(func(x Pair[K, V]) bool { return reflect.DeepEqual(x.GetA(), key) })
 }
 
 func (this iMap[K, V]) ContainsValue(value V) bool {
-	return this.Values().
-		Exists(func(x V) bool { return reflect.DeepEqual(x, value) })
+	return this.Entries().
+		Exists(func(x Pair[K, V]) bool { return reflect.DeepEqual(x.GetB(), value) })
 }
 
 func (this iMap[K, V]) Entries() Seq[Pair[K, V]] {
-	entries := []Pair[K, V]{}
-	for key := range this.data {
-		entries = append(entries, PairOf(key, this.data[key]))
-	}
-	return ArrayOfGoSlice(entries)
+	return this.data
 }
 
 func (this iMap[K, V]) Keys() Seq[K] {

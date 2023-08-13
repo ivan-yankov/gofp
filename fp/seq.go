@@ -205,3 +205,10 @@ func SeqSliding[T any](seq Seq[T], size int, step int) Seq[Seq[T]] {
 	}
 	return it(seq, emptySeq[Seq[T]](seq.IsList())).Reverse()
 }
+
+func SeqSetEquals[T any](sa Seq[T], sb Seq[T]) bool {
+	if sa.Size() != sb.Size() {
+		return false
+	}
+	return sa.ForAll(func(x T) bool { return sb.ContainsElement(x) })
+}
